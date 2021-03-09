@@ -69,3 +69,6 @@ void Administrator::publish_game_invite(const std::string &game_id) const
                             << GameInvite::to_json(game_invite);
     channel->BasicPublish("referee", "", message);
 }
+
+
+const std::string Administrator::entity_type = "Administrator";

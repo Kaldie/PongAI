@@ -1,3 +1,6 @@
+#ifndef __ADMINISTRATOR_H__
+#define __ADMINISTRATOR_H__
+
 #include <PongAI/default_include.hpp>
 #include <PongAI/entity.hpp>
 
@@ -5,6 +8,8 @@ class Administrator : Entity
 {
 private:
     /* data */
+    const static std::string entity_type;
+
     void notify_new_game();
     void notify_start_game();
     void notify_end_game();
@@ -17,3 +22,5 @@ public:
     Administrator();
     void create_new_game(int number_of_players, FieldSize field_size);
 };
+
+#endif // __ADMINISTRATOR_H__

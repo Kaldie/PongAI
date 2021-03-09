@@ -55,7 +55,8 @@ void Entity::initialise_heartbeat()
   auto heartbeat_queue_name = create_queue("");
 
   std::ostringstream queue_stream;
-  queue_stream << "heartbeat." << channel->BindQueue(heartbeat_queue_name, adminstator_exchange_name, "heartbeat.#");
+  queue_stream << "heartbeat." << entity_type;
+  channel->BindQueue(heartbeat_queue_name, adminstator_exchange_name, "heartbeat.#");
 }
 
 void Entity::create_exchange(const std::string &type, const std::string &name) const
@@ -79,3 +80,5 @@ Entity::Entity()
 {
   connect();
 }
+
+const std::string Entity::entity_type = "Entity";

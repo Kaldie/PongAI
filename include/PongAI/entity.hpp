@@ -6,6 +6,8 @@
 
 class Entity {
 private:
+
+    const static std::string entity_type;
     /* data */
     AmqpClient::Channel::ptr_t channel;
     void connect(const char* hostname, const int port, const char* username, const char* password);
@@ -20,6 +22,7 @@ public:
     void initialise_heartbeat();
 
 };
+
 
 
 
