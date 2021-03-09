@@ -59,7 +59,8 @@ RUN wget https://github.com/alanxz/SimpleAmqpClient/archive/v2.5.1.tar.gz -O Sim
     && cd simpleamqpclient-build \
     && cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. \
     && cmake --build . --target install \
-    && rm -r ${SIMPLE_AMQP_CLIENT_ROOT}
+    && rm -r ${SIMPLE_AMQP_CLIENT_ROOT} \
+    && ldconfig
 
 
 FROM build_SimpleAmqpClient
@@ -67,7 +68,7 @@ FROM build_SimpleAmqpClient
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp
 
-# This command runs your application, comment out this line to compile only
-CMD ["./build/PongAI"]
-
-LABEL name="magic"
+RUN mkdir build && \
+    cd build && \
+    cmake .. && \
+    cmake --build .

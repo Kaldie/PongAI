@@ -1,3 +1,6 @@
+#ifndef __DEFAULT_INCLUDE_H__
+#define __DEFAULT_INCLUDE_H__
+
 #include <boost/shared_ptr.hpp>
 
 class Location;
@@ -15,8 +18,11 @@ typedef boost::shared_ptr<Ball> Ball_ptr;
 class Field;
 typedef boost::shared_ptr<Field> Field_ptr;
 
-enum FieldSize {
+enum FieldSize
+{
     Small,
     Medium,
     Large,
 };
+
+#endif // __DEFAULT_INCLUDE_H__

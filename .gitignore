@@ -3,5 +3,5 @@
 .devcontainer/**/*
 CMakeCache*
 **/CMakeFiles/**/*
-
-DartConfiguration*
+.env
+**/*log

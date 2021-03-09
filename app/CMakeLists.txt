@@ -1,8 +1,8 @@
-add_executable(Player player.cpp)
 add_executable(Referee referee.cpp)
 
-target_include_directories(Player PRIVATE ../src)
-target_include_directories(Referee PRIVATE entity ../src)
+find_package(Boost COMPONENTS log log_setup random REQUIRED)
 
-target_link_libraries(Player SimpleAmqpClient PongAI)
-target_link_libraries(Referee SimpleAmqpClient PongAI)
+# We need this directory, and users of our library will need it too
+target_include_directories(Referee PRIVATE ../include)
+
+target_link_libraries(Referee SimpleAmqpClient PongAI Boost::boost Boost::log_setup Boost::log )

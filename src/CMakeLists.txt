@@ -9,13 +9,15 @@ add_library(PongAI ${ENTITY_SRC} ${HEADER_LIST})
 # We need this directory, and users of our library will need it too
 target_include_directories(PongAI PUBLIC ../include)
 
+ADD_DEFINITIONS(-DBOOST_LOG_DYN_LINK)
+
+find_package(Boost COMPONENTS log random thread REQUIRED)
+
 # This depends on (header only) boost
-target_link_libraries(PongAI PRIVATE Boost::boost SimpleAmqpClient)
+target_link_libraries(PongAI PRIVATE Boost::boost Boost::log Boost::random Boost::thread SimpleAmqpClient)
 
 # All users of this library will need at least C++11
 target_compile_features(PongAI PUBLIC cxx_std_11)
-
-find_package(Boost REQUIRED)
 
 # IDEs should put the headers in a nice place
 source_group(
