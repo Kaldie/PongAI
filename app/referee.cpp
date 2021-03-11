@@ -13,6 +13,8 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
+#include <boost/thread.hpp>
+#include <boost/chrono.hpp>
 
 namespace logging = boost::log;
 namespace src = boost::log::sources;
@@ -41,6 +43,25 @@ void log_init()
                                      logging::trivial::info);
 }
 
+void listen_for_heartbeat(boost::shared_ptr<Administrator>& administrator) {
+    while (true) {
+        administrator->manage_heartbeats();
+    }
+}
+
+void wait(int seconds)
+{
+  boost::this_thread::sleep_for(boost::chrono::seconds{seconds});
+}
+
+void request_heart_beat(boost::shared_ptr<Administrator>& administrator) {
+    while (true) {
+        administrator->request_heartbeat(Administrator::entity_type);
+        wait(1);        
+    }
+}
+
+
 int main(int, char **)
 {
 
@@ -49,7 +70,17 @@ int main(int, char **)
               << "This is Referee!\n";
               
     boost::shared_ptr<Administrator> referee = boost::make_shared<Administrator>();
-    referee->create_new_game(2, Medium);
+    auto thread_1 = boost::thread(listen_for_heartbeat, referee);
+    
+    std::cout << "After thread 1" <<  std::endl <<Administrator::entity_type << std::endl;
+
+    auto thread_2 = boost::thread(request_heart_beat, referee);
+    std::cout << "After thread 2"<< std::endl;
+
+    // thread_1.join();
+    thread_2.join();
+
+    // referee->create_new_game(2, Medium);
 
     // AmqpClient::Channel::ptr_t channel = AmqpClient::Channel::Create("localhost");
     // std::string consumer_tag = channel->BasicConsume("my_queue", "");

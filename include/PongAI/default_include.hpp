@@ -2,6 +2,7 @@
 #define __DEFAULT_INCLUDE_H__
 
 #include <boost/shared_ptr.hpp>
+#include <PongAI/util.hpp>
 
 class Location;
 typedef boost::shared_ptr<Location> Location_ptr;

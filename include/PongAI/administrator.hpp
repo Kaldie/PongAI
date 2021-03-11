@@ -4,12 +4,11 @@
 #include <PongAI/default_include.hpp>
 #include <PongAI/entity.hpp>
 
-class Administrator : Entity
+class Administrator : public Entity
 {
 private:
     /* data */
-    const static std::string entity_type;
-
+    
     void notify_new_game();
     void notify_start_game();
     void notify_end_game();
@@ -19,8 +18,9 @@ private:
     std::string create_new_game_id() const;
 
 public:
-    Administrator();
     void create_new_game(int number_of_players, FieldSize field_size);
+    std::string get_entity_type() const {return Administrator::entity_type;};
+    const static std::string entity_type;
 };
 
 #endif // __ADMINISTRATOR_H__

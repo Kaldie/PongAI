@@ -1,3 +1,6 @@
+#ifndef __PADDLE_H__
+#define __PADDLE_H__
+
 #include <PongAI/default_include.hpp>
 
 class Paddle
@@ -10,3 +13,5 @@ private:
 public:
     Paddle();
 };
+
+#endif // __PADDLE_H__

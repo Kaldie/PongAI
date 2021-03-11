@@ -1,13 +1,12 @@
 #include <PongAI/administrator.hpp>
 #include <PongAI/game_invite.hpp>
-#include <boost/random/random_device.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
+
 #include <boost/log/trivial.hpp>
 #include <boost/thread/thread.hpp>
 
 std::string Administrator::create_administration_exchange() const
 {
-    AmqpClient::Channel::ptr_t channel = get_channel();
+    AmqpClient::Channel::ptr_t channel = create_channel();
     const char *ADMINISTRATION_EXECHANGE_NAME = getenv("ADMINISTRATION_EXECHANGE_NAME");
     if (channel)
     {
@@ -21,7 +20,7 @@ std::string Administrator::create_administration_exchange() const
 
 void Administrator::create_game_exchange_and_queue(const std::string &game_id) const
 {
-    AmqpClient::Channel::ptr_t channel = get_channel();
+    AmqpClient::Channel::ptr_t channel = create_channel();
     if (channel)
     {
         // Create an auto-deletion exchange of type topic
@@ -37,18 +36,8 @@ void Administrator::notify_start_game()
 
 std::string Administrator::create_new_game_id() const
 {
-    std::string game_id;
-    std::string chars(
-        "abcdefghijklmnopqrstuvwxyz"
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "1234567890");
-    boost::random::random_device rng;
-    boost::random::uniform_int_distribution<> index_dist(0, chars.size() - 1);
-    for (int i = 0; i < 16; ++i)
-    {
-        game_id += chars[index_dist(rng)];
-    }
-    return game_id;
+
+    return create_random_string(16,"game_");
 }
 
 void Administrator::create_new_game(int number_of_players, FieldSize field_size)
@@ -61,7 +50,7 @@ void Administrator::create_new_game(int number_of_players, FieldSize field_size)
 
 void Administrator::publish_game_invite(const std::string &game_id) const
 {
-    AmqpClient::Channel::ptr_t channel = get_channel();
+    AmqpClient::Channel::ptr_t channel = create_channel();
     AmqpClient::BasicMessage::ptr_t message = AmqpClient::BasicMessage::Create();
     GameInvite game_invite(game_id, 2);
     message->Body(GameInvite::to_json(game_invite));
@@ -72,3 +61,5 @@ void Administrator::publish_game_invite(const std::string &game_id) const
 
 
 const std::string Administrator::entity_type = "Administrator";
+
+
