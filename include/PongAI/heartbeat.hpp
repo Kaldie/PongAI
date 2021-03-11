@@ -2,6 +2,7 @@
 #define __GAME_INVITE_H__
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 class Heartbeat
 {
@@ -11,10 +12,17 @@ public:
     bool is_request;
 
     Heartbeat() {}
-    Heartbeat(const std::string &name, const std::string& entity_type, const bool is_request = false);
+    Heartbeat(const std::string &name, const std::string &entity_type, const bool is_request = false);
 
     static std::string to_json(const Heartbeat &);
-    static Heartbeat from_json(const std::string &);
+    static boost::shared_ptr<Heartbeat> from_json(const std::string &);
+
+    static boost::shared_ptr<Heartbeat> create_shared_pointer(const std::string &name,
+                                                              const std::string &entity_type,
+                                                              const bool is_request);
+
+    static boost::shared_ptr<Heartbeat> create_shared_pointer();
+    static boost::shared_ptr<Heartbeat> create_shared_pointer(const Heartbeat&);
 };
 
 #endif // __GAME_INVITE_H__

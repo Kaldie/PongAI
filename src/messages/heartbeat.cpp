@@ -3,6 +3,9 @@
 #include <boost/property_tree/json_parser.hpp>
 #undef BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/property_tree/ptree.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/shared_ptr.hpp>
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -23,14 +26,26 @@ std::string Heartbeat::to_json(const Heartbeat& heartbeat) {
    return oss.str();
 }
 
-Heartbeat Heartbeat::from_json(const std::string& input) {
+boost::shared_ptr<Heartbeat> Heartbeat::from_json(const std::string& input) {
     std::stringstream ss;
     boost::property_tree::ptree out;
     ss << input;
     boost::property_tree::read_json(ss, out);
-    Heartbeat heartbeat;
-    heartbeat.name = out.get<std::string>("heartbeat.name","unknown");
-    heartbeat.entity_type = out.get<std::string>("heartbeat.entity_type");
-    heartbeat.is_request = out.get<bool>("heartbeat.is_request");
+    boost::shared_ptr<Heartbeat> heartbeat = create_shared_pointer();
+    heartbeat->name = out.get<std::string>("heartbeat.name","unknown");
+    heartbeat->entity_type = out.get<std::string>("heartbeat.entity_type");
+    heartbeat->is_request = out.get<bool>("heartbeat.is_request");
     return heartbeat;
+}
+
+boost::shared_ptr<Heartbeat> Heartbeat::create_shared_pointer(const std::string& name, const std::string& entity_type, const bool is_request) {
+    return boost::make_shared<Heartbeat>(name, entity_type, is_request);
+}
+
+boost::shared_ptr<Heartbeat> Heartbeat::create_shared_pointer() {
+    return boost::make_shared<Heartbeat>();
+}
+
+boost::shared_ptr<Heartbeat> Heartbeat::create_shared_pointer(const Heartbeat& heartbeat) {
+    return boost::make_shared<Heartbeat>(heartbeat);
 }

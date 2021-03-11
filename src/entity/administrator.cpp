@@ -4,30 +4,13 @@
 #include <boost/log/trivial.hpp>
 #include <boost/thread/thread.hpp>
 
-std::string Administrator::create_administration_exchange() const
-{
-    AmqpClient::Channel::ptr_t channel = create_channel();
-    const char *ADMINISTRATION_EXECHANGE_NAME = getenv("ADMINISTRATION_EXECHANGE_NAME");
-    if (channel)
-    {
-        channel->DeclareExchange(ADMINISTRATION_EXECHANGE_NAME,
-                                 AmqpClient::Channel::EXCHANGE_TYPE_FANOUT,
-                                 false,
-                                 true);
-    }
-    return ADMINISTRATION_EXECHANGE_NAME;
-}
-
 void Administrator::create_game_exchange_and_queue(const std::string &game_id) const
 {
     AmqpClient::Channel::ptr_t channel = create_channel();
-    if (channel)
-    {
         // Create an auto-deletion exchange of type topic
-        channel->DeclareExchange(
-            game_id,
-            AmqpClient::Channel::EXCHANGE_TYPE_TOPIC, false, false, true);
-    }
+    channel->DeclareExchange(
+        game_id,
+        AmqpClient::Channel::EXCHANGE_TYPE_TOPIC, false, false, true);
 }
 
 void Administrator::notify_start_game()
@@ -42,9 +25,11 @@ std::string Administrator::create_new_game_id() const
 
 void Administrator::create_new_game(int number_of_players, FieldSize field_size)
 {
-    auto referee_exchange = create_administration_exchange();
+    AmqpClient::Channel::ptr_t channel = create_channel();
+    create_administrative_exchange(channel);
     auto game_id = create_new_game_id();
     create_game_exchange_and_queue(game_id);
+
     publish_game_invite(game_id);
 }
 
@@ -60,6 +45,7 @@ void Administrator::publish_game_invite(const std::string &game_id) const
 }
 
 
-const std::string Administrator::entity_type = "Administrator";
-
-
+std::string Administrator::get_entity_type() const
+{
+    return "Administrator";
+}

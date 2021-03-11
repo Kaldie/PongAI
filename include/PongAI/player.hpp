@@ -16,7 +16,7 @@ private:
     boost::shared_ptr<Ball> ball;
 
 public:
-    const static std::string entity_type;
+
 };
 
 #endif // __PLAYER_H__

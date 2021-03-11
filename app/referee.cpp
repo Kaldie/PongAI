@@ -56,7 +56,7 @@ void wait(int seconds)
 
 void request_heart_beat(boost::shared_ptr<Administrator>& administrator) {
     while (true) {
-        administrator->request_heartbeat(Administrator::entity_type);
+        administrator->request_heartbeat(administrator->get_entity_type());
         wait(1);        
     }
 }
@@ -72,17 +72,12 @@ int main(int, char **)
     boost::shared_ptr<Administrator> referee = boost::make_shared<Administrator>();
     auto thread_1 = boost::thread(listen_for_heartbeat, referee);
     
-    std::cout << "After thread 1" <<  std::endl <<Administrator::entity_type << std::endl;
+    std::cout << "After thread 1" << std::endl;
 
     auto thread_2 = boost::thread(request_heart_beat, referee);
     std::cout << "After thread 2"<< std::endl;
 
-    // thread_1.join();
+    thread_1.join();
     thread_2.join();
 
-    // referee->create_new_game(2, Medium);
-
-    // AmqpClient::Channel::ptr_t channel = AmqpClient::Channel::Create("localhost");
-    // std::string consumer_tag = channel->BasicConsume("my_queue", "");
-    // AmqpClient::Envelope::ptr_t envelope = channel->BasicConsumeMessage(consumer_tag);
 }
