@@ -26,7 +26,7 @@ std::string Administrator::create_new_game_id() const
 void Administrator::create_new_game(int number_of_players, FieldSize field_size)
 {
     AmqpClient::Channel::ptr_t channel = create_channel();
-    create_administrative_exchange(channel);
+    declare_administration_exchange(channel);
     auto game_id = create_new_game_id();
     create_game_exchange_and_queue(game_id);
 
@@ -42,10 +42,4 @@ void Administrator::publish_game_invite(const std::string &game_id) const
     BOOST_LOG_TRIVIAL(info) << "Game invite send: " << std::endl
                             << GameInvite::to_json(game_invite);
     channel->BasicPublish("referee", "", message);
-}
-
-
-std::string Administrator::get_entity_type() const
-{
-    return "Administrator";
 }

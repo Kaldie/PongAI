@@ -18,7 +18,7 @@ private:
 
 public:
     void create_new_game(int number_of_players, FieldSize field_size);
-    virtual std::string get_entity_type() const override;
+    virtual std::string get_entity_type() const override { return "Administrator";};
 };
 
 #endif // __ADMINISTRATOR_H__

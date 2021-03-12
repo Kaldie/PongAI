@@ -17,6 +17,7 @@ private:
 
 public:
 
+    virtual std::string get_entity_type() const override { return "Player";};
 };
 
 #endif // __PLAYER_H__

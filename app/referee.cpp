@@ -55,8 +55,11 @@ void wait(int seconds)
 }
 
 void request_heart_beat(boost::shared_ptr<Administrator>& administrator) {
+
     while (true) {
-        administrator->request_heartbeat(administrator->get_entity_type());
+        for(auto name : administrator->find_entities(administrator->get_entity_type())) {
+            std::cout<<"Found an: " << name << std::endl;
+        }
         wait(1);        
     }
 }
@@ -64,18 +67,12 @@ void request_heart_beat(boost::shared_ptr<Administrator>& administrator) {
 
 int main(int, char **)
 {
-
     log_init();
-    std::cout << "Hello, world!" << std::endl
-              << "This is Referee!\n";
-              
-    boost::shared_ptr<Administrator> referee = boost::make_shared<Administrator>();
-    auto thread_1 = boost::thread(listen_for_heartbeat, referee);
-    
-    std::cout << "After thread 1" << std::endl;
 
+    boost::shared_ptr<Administrator> referee = boost::make_shared<Administrator>();
+
+    auto thread_1 = boost::thread(listen_for_heartbeat, referee);
     auto thread_2 = boost::thread(request_heart_beat, referee);
-    std::cout << "After thread 2"<< std::endl;
 
     thread_1.join();
     thread_2.join();
