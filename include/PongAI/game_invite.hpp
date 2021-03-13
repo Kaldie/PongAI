@@ -2,12 +2,14 @@
 #define __GAME_INVITE_H__
 
 #include <string>
+#include <vector>
 
 class GameInvite
 {
 public:
     std::string game_id;
     int number_of_players;
+    std::vector<std::string> player_names;
 
     GameInvite() {}
     GameInvite(const std::string &game_id, const int &number_of_players);

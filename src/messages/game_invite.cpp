@@ -10,12 +10,14 @@
 GameInvite::GameInvite(const std::string& game_id, const int& number_of_players) {
     this->game_id = game_id;
     this->number_of_players = number_of_players;
+
 }
 
 std::string GameInvite::to_json(const GameInvite& invite) {
    boost::property_tree::ptree out;
    out.put("invite.game_id", invite.game_id);
    out.put("invite.number_of_players", invite.number_of_players);
+   out.put("invite.players", invite.player_names);
    std::ostringstream oss;
    boost::property_tree::write_json(oss, out);
    return oss.str();
