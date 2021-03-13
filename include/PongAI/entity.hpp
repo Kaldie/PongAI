@@ -5,6 +5,13 @@
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
 
 class Heartbeat;
+
+namespace AmqpClient {
+    
+    namespace Channel {
+        shared_ptr<
+    }
+}
 typedef AmqpClient::Channel::ptr_t channel_ptr;
 
 class Entity
@@ -22,8 +29,8 @@ private:
 
     void listen_and_respond_heartbeat_requests(const std::string &queue_name, const channel_ptr &) const;
 
-    std::string create_heartbeat_topic() const;
-    std::string create_heartbeat_topic(const std::string &entity_type) const;
+    std::string create_heartbeat_topic_name() const;
+    std::string create_heartbeat_topic_name(const std::string &entity_type) const;
 
     void request_heartbeat(const std::string &entity_type, const channel_ptr &channel) const;
 
