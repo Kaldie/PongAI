@@ -3,9 +3,28 @@
 
 #include <string>
 #include <vector>
+#include <functional>
+#include <boost/shared_ptr.hpp>
+
+namespace boost
+{
+    namespace property_tree
+    {
+        template < class Key, class Data, class KeyCompare >
+        class basic_ptree;
+        typedef basic_ptree<std::string, std::string, std::less<std::string>> ptree;
+ 
+        }
+}
+
+typedef boost::shared_ptr<boost::property_tree::ptree> ptree_ptr;
 
 class GameInvite
 {
+private:
+    static ptree_ptr create_property_tree_from_players(
+        const std::vector<std::string> &player_names);
+
 public:
     std::string game_id;
     int number_of_players;

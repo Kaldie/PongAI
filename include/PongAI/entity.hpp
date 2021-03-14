@@ -2,17 +2,18 @@
 #define __ENTITY_H__
 
 #include <boost/shared_ptr.hpp>
-#include <SimpleAmqpClient/SimpleAmqpClient.h>
+#include <string>
+#include <vector>
 
 class Heartbeat;
 
-namespace AmqpClient {
-    
-    namespace Channel {
-        shared_ptr<
-    }
+namespace AmqpClient
+{
+
+    class Channel;
+
 }
-typedef AmqpClient::Channel::ptr_t channel_ptr;
+typedef boost::shared_ptr<AmqpClient::Channel> channel_ptr;
 
 class Entity
 {
@@ -24,8 +25,7 @@ private:
                         const char *username,
                         const char *password) const;
 
-    std::string create_heartbeat_queue(const channel_ptr &channel, const std::string& heartbeat_topic) const;
-    boost::shared_ptr<Heartbeat> listen_heartbeat_request(const std::string &queue_name, const channel_ptr &channel) const;
+    std::string create_heartbeat_queue(const channel_ptr &channel, const std::string &heartbeat_topic) const;
 
     void listen_and_respond_heartbeat_requests(const std::string &queue_name, const channel_ptr &) const;
 
@@ -39,10 +39,25 @@ public:
 
     channel_ptr create_channel() const;
 
-    std::string declare_administration_exchange(const channel_ptr &) const;
+    std::string prepare_listen_exchange_topic(
+        const channel_ptr &channel,
+        const std::string &exchange_name,
+        const std::string &topic_name) const;
 
-    void manage_heartbeats();
-    std::vector<std::string> find_entities(const std::string &entity_type) const;
+    std::string prepare_listen_admin_exchange_topic(
+        const channel_ptr &channel,
+        const std::string &topic_name) const;
+
+    std::string prepare_listen_heartbeat_topic(
+        const channel_ptr &channel, 
+        const std::string &entity_type) const;
+
+    std::string prepare_listen_heartbeat_topic(
+        const channel_ptr &channel) const;
+
+    void manage_heartbeats() const;
+
+    std::vector<std::string> find_entities(const std::string& entity_type) const;
 
     virtual std::string get_entity_type() const { return "Entity"; };
 };
