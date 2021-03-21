@@ -6,7 +6,7 @@
 class Player : Entity
 {
 private:
-    virtual void evaluate_turn();
+    virtual void evaluate_turn(){};
     virtual std::string entity_type() const override { return "Player"; };
     void listen_and_accept_game_invite(const channel_ptr &channel,
                                         const std::string &consumer) const;
@@ -16,6 +16,9 @@ private:
 
 public:
     void find_and_participate();
+
+    Player(){};
+    ~Player(){};
 };
 
 #endif // __PLAYER_H__

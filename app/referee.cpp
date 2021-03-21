@@ -1,9 +1,7 @@
-#include <iostream>
 #include <PongAI/administrator.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
 #include <PongAI/game_invite.hpp>
-#include <boost/log/core.hpp>
+#include <PongAI/player.hpp>
+#include <boost/chrono.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/sinks/text_file_backend.hpp>
@@ -13,10 +11,10 @@
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/utility/setup/file.hpp>
-#include <boost/thread.hpp>
-#include <boost/chrono.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/thread.hpp>
+#include <iostream>
 
 namespace logging = boost::log;
 namespace src = boost::log::sources;
@@ -42,41 +40,68 @@ void log_init()
                              boost::log::keywords::format = format);
 
     logging::core::get()->set_filter(logging::trivial::severity >=
-                                     logging::trivial::info);
+                                     logging::trivial::debug);
 }
 
-void lala(boost::shared_ptr<Administrator>& administrator) {
-    while (true) {
+void lala(boost::shared_ptr<Administrator> &administrator)
+{
+    while (true)
+    {
         administrator->manage_heartbeats();
     }
 }
 
 void wait(int seconds)
 {
-  boost::this_thread::sleep_for(boost::chrono::seconds{seconds});
+    boost::this_thread::sleep_for(boost::chrono::seconds{seconds});
 }
 
-void request_heart_beat(boost::shared_ptr<Administrator>& administrator) {
+void start_new_game(boost::shared_ptr<Administrator> &administrator)
+{
+    wait(1);
+    administrator->create_new_game(2, FieldSize::Medium);
+}
 
-    while (true) {
-        for(auto name : administrator->find_entities(administrator->get_entity_type())) {
-            std::cout<<"Found an: " << name << std::endl;
+void listner_for_game(boost::shared_ptr<Player> &player)
+{
+    player->find_and_participate();
+}
+
+void request_heart_beat(boost::shared_ptr<Administrator> &administrator)
+{
+
+    while (true)
+    {
+        for (auto name : administrator->find_entities(administrator->get_entity_type()))
+        {
+            std::cout << "Found an: " << name << std::endl;
         }
-        wait(1);        
+        wait(1);
     }
 }
-
 
 int main(int, char **)
 {
     log_init();
 
-    boost::shared_ptr<Administrator> referee = boost::make_shared<Administrator>();
-
-    auto thread_1 = boost::thread(lala, referee);
-    auto thread_2 = boost::thread(request_heart_beat, referee);
+    boost::shared_ptr<Administrator> administrator = boost::make_shared<Administrator>();
+    std::vector<boost::thread> threads;
+    for (auto i = 0; i < 12; ++i)
+    {
+        boost::shared_ptr<Player> player = boost::make_shared<Player>();
+        threads.push_back(boost::thread(listner_for_game, player));
+    }
+    auto thread_1 = boost::thread(start_new_game, administrator);
+    wait(5);
+    auto thread_2 = boost::thread(start_new_game, administrator);
+    wait(5);
+    auto thread_3 = boost::thread(start_new_game, administrator);
 
     thread_1.join();
     thread_2.join();
-
+    thread_3.join();
+    for (int i = 0; i < threads.size(); ++i)
+    {
+        threads[i].join();
+    }
 }

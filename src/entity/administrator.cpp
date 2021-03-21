@@ -43,6 +43,7 @@ bool Administrator::should_acknowledge(GameState *current_state,
 
     if (current_state->participents.size() + 1 != request.participents.size())
     {
+        BOOST_LOG_TRIVIAL(info) << "Rejecting, participent size was wrong!";
         should_accept = false;
     }
 
@@ -71,8 +72,10 @@ void Administrator::respond_game_invite_acceptance(const channel_ptr &channel,
         current_game_state->intend = GameStateIntend::Acknowledge;
         // Send the player an Acknowledge
         send_game_state(channel, *current_game_state);
+        BOOST_LOG_TRIVIAL(debug) << "Number of players reqeusted: " << current_game_state->number_of_players;
+        BOOST_LOG_TRIVIAL(debug) << "Current number of players accepted: " << current_game_state->participents.size();
 
-        if (current_game_state->number_of_players < current_game_state->participents.size())
+        if (current_game_state->number_of_players > current_game_state->participents.size())
         {
             current_game_state->intend = GameStateIntend::Requesting;
         }
@@ -80,17 +83,16 @@ void Administrator::respond_game_invite_acceptance(const channel_ptr &channel,
         {
             current_game_state->intend = GameStateIntend::Starting;
         }
-        // Ask for new players or give the start signal
-        send_game_state(channel, *current_game_state);
     }
     else
     {
         request->intend = GameStateIntend::Reject;
-        BOOST_LOG_TRIVIAL(info) << "Sending rejection" << std::endl
-                                << GameState::to_json(*request);
+        BOOST_LOG_TRIVIAL(info) << "Sending rejection";
         // Request is invalid
-        send_game_state(channel, *current_game_state);
+        send_game_state(channel, *request);
     }
+    // Ask for new players or give the start signal
+    send_game_state(channel, *current_game_state);
 }
 
 void Administrator::listnen_for_participants(const channel_ptr &channel,
@@ -107,6 +109,7 @@ void Administrator::listnen_for_participants(const channel_ptr &channel,
         if (has_found_message)
         {
             GameState game_state = GameState::from_json(envelope->Message()->Body());
+
             if (game_state.intend == GameStateIntend::Accepting)
             {
                 bool should_accept = should_acknowledge(accepted_game_state, game_state);
@@ -121,5 +124,5 @@ void Administrator::listnen_for_participants(const channel_ptr &channel,
             --timeout_number;
         }
     } while (timeout_number >= 0 &&
-             accepted_game_state->intend != GameStateIntend::Acknowledge);
+             accepted_game_state->intend != GameStateIntend::Starting);
 }

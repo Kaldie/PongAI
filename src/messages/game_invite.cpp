@@ -61,12 +61,12 @@ boost::shared_ptr<boost::property_tree::ptree> GameState::create_property_tree_f
 }
 
 std::vector<std::pair<EntityType, std::string>> GameState::create_participents_from_property_tree(
-    const boost::shared_ptr<boost::property_tree::ptree> property_tree)
+    const boost::property_tree::ptree& property_tree)
 {
     std::vector<std::pair<EntityType, std::string>> participents;
     // auto optional_child2 = property_tree->get_child("participents");
     auto default_ptree = boost::property_tree::ptree();
-    auto optional_child = property_tree->get_child_optional("participents");
+    auto optional_child = property_tree.get_child_optional("invite.participents");
 
     for (auto const &item : optional_child.value_or(default_ptree))
     {
@@ -83,7 +83,7 @@ std::string GameState::to_json(const GameState &invite)
     boost::property_tree::ptree out;
     out.put("invite.game_id", invite.game_id);
     out.put("invite.number_of_players", invite.number_of_players);
-    out.add_child("invite.players", *create_property_tree_from_participents(invite.participents));
+    out.add_child("invite.participents", *create_property_tree_from_participents(invite.participents));
     out.put("invite.current_turn", invite.current_turn);
     out.put("invite.intend", invite.intend);
 
@@ -102,7 +102,7 @@ GameState GameState::from_json(const std::string &input)
 
     game_invite.game_id = out.get<std::string>("invite.game_id");
     game_invite.number_of_players = out.get<int>("invite.number_of_players");
-    game_invite.participents = create_participents_from_property_tree(boost::make_shared<boost::property_tree::ptree>(out));
+    game_invite.participents = create_participents_from_property_tree(out);
     game_invite.current_turn = out.get<int>("invite.current_turn");
     game_invite.intend = (GameStateIntend)out.get<int>("invite.intend");
 

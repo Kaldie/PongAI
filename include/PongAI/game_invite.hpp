@@ -29,7 +29,7 @@ private:
         const Participents &participents);
 
     static Participents create_participents_from_property_tree(
-        const ptree_ptr property_tree);
+        const boost::property_tree::ptree& property_tree);
 
     std::string game_id;
 
