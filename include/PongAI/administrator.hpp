@@ -19,16 +19,10 @@ class GameState;
 class Administrator : public Entity
 {
 private:
-    void notify_new_game();
-    void notify_start_game();
-    void notify_end_game();
-    void publish_game_invite(const channel_ptr &channel,
-                             const GameState *game_state) const;
 
-    std::string create_new_game_id() const;
-    std::string get_game_exchange_name() const;
     void listnen_for_participants(const channel_ptr &channel,
-                             const std::string &consumer) const;
+                                  const std::string &consumer,
+                                  GameState *accepted_game_state) const;
 
     bool should_acknowledge(GameState *current_state,
                             const GameState &request) const;
@@ -38,9 +32,17 @@ private:
                                         GameState *request,
                                         const bool should_accept) const;
 
+    void send_game_state(const channel_ptr &channel,
+                         const GameState &game_state) const;
+
+    virtual std::string entity_type()
+        const override { return "Administrator"; };
+
 public:
-    void create_new_game(int number_of_players, FieldSize field_size);
-    virtual std::string get_entity_type() const override { return "Administrator"; };
+    void create_new_game(int number_of_players,
+                         FieldSize field_size);
+
+
 };
 
 #endif // __ADMINISTRATOR_H__

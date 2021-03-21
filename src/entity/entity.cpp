@@ -3,6 +3,7 @@
 #include <PongAI/entity.hpp>
 #include <PongAI/default_include.hpp>
 #include <PongAI/heartbeat.hpp>
+#include <PongAI/util.hpp>
 #include <cstdlib>
 #include <stdlib.h>
 #include <iostream>
@@ -62,7 +63,7 @@ std::string Entity::prepare_listen_exchange_topic(const AmqpClient::Channel::ptr
 std::string Entity::prepare_listen_admin_exchange_topic(const AmqpClient::Channel::ptr_t &channel,
                                                         const std::string &topic_name) const
 {
-  auto adminstator_exchange_name = getenv("ADMINISTRATION_EXECHANGE_NAME");
+  auto adminstator_exchange_name = get_administration_exchange_name();
   return prepare_listen_exchange_topic(channel, adminstator_exchange_name, topic_name);
 }
 
@@ -81,8 +82,8 @@ std::string Entity::prepare_listen_heartbeat_topic(const AmqpClient::Channel::pt
 
 std::string Entity::create_heartbeat_topic_name() const
 {
-  BOOST_LOG_TRIVIAL(info) << "Creating topic name with entity_type: " << get_entity_type();
-  return create_heartbeat_topic_name(get_entity_type());
+  BOOST_LOG_TRIVIAL(info) << "Creating topic name with entity_type: " << entity_type();
+  return create_heartbeat_topic_name(entity_type());
 }
 
 std::string Entity::create_heartbeat_topic_name(const std::string &entity_type) const
@@ -92,10 +93,8 @@ std::string Entity::create_heartbeat_topic_name(const std::string &entity_type) 
   return queue_stream.str();
 }
 
-Entity::Entity()
-{
-  name = create_random_string(19, get_entity_type() + "_");
-}
+Entity::Entity() : id(create_random_string(19))
+{}
 
 void Entity::manage_heartbeats() const
 {
@@ -118,9 +117,9 @@ void Entity::listen_and_respond_heartbeat_requests(const std::string &consumer_n
     if (heartbeat->is_request)
     {
       BOOST_LOG_TRIVIAL(info) << "Responding to hearbeat request!" << std::endl;
-      auto adminstator_exchange_name = getenv("ADMINISTRATION_EXECHANGE_NAME");
+      auto adminstator_exchange_name = get_administration_exchange_name();
       heartbeat->is_request = false;
-      heartbeat->name = name;
+      heartbeat->name = get_name();
       channel->BasicPublish(adminstator_exchange_name,
                             create_heartbeat_topic_name(),
                             AmqpClient::BasicMessage::Create(Heartbeat::to_json(*heartbeat)));
@@ -134,12 +133,12 @@ void Entity::request_heartbeat(const std::string &entity_type, const AmqpClient:
   BOOST_LOG_TRIVIAL(info) << "Requesting heartbeat for: " << entity_type;
 
   prepare_listen_heartbeat_topic(channel, entity_type);
-  auto adminstator_exchange_name = getenv("ADMINISTRATION_EXECHANGE_NAME");
+  auto adminstator_exchange_name = get_administration_exchange_name();
   channel->BasicPublish(
       adminstator_exchange_name,
       create_heartbeat_topic_name(entity_type),
       AmqpClient::BasicMessage::Create(
-          Heartbeat::to_json(Heartbeat(name, entity_type, true))));
+          Heartbeat::to_json(Heartbeat(get_name(), entity_type, true))));
 }
 
 std::vector<std::string> Entity::find_entities(const std::string &entity_type) const

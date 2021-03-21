@@ -31,17 +31,18 @@ private:
     static Participents create_participents_from_property_tree(
         const ptree_ptr property_tree);
 
+    std::string game_id;
+
 public:
     int current_turn = 0;
     int number_of_players;
-    std::string game_id;
     Participents participents;
     enum GameStateIntend intend;
     enum FieldSize field_size;
 
     GameState();
     
-    GameState(const int &number_of_players);
+    explicit GameState(const int &number_of_players);
 
     GameState(const int &number_of_players,
               const FieldSize &field_size);
@@ -53,6 +54,8 @@ public:
 
     static std::string to_json(const GameState &);
     static GameState from_json(const std::string &);
+
+    std::string get_game_id() const {return game_id;};
 };
 
 #endif // __GAME_INVITE_H__

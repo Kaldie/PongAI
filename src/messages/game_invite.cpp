@@ -1,10 +1,11 @@
-#include <PongAI/game_invite.hpp>
 #include <PongAI/default_include.hpp>
+#include <PongAI/game_invite.hpp>
+#include <PongAI/util.hpp>
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS // can be removed once this is fixed: https://github.com/boostorg/property_tree/pull/50
 #include <boost/property_tree/json_parser.hpp>
 #undef BOOST_BIND_GLOBAL_PLACEHOLDERS
-#include <boost/property_tree/ptree.hpp>
 #include <boost/make_shared.hpp>
+#include <boost/property_tree/ptree.hpp>
 #include <iostream>
 #include <sstream>
 #include <string>

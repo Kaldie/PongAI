@@ -47,7 +47,7 @@ void log_init()
 
 void lala(boost::shared_ptr<Administrator>& administrator) {
     while (true) {
-        administrator->create_new_game(2, FieldSize::Large);
+        administrator->manage_heartbeats();
     }
 }
 
@@ -74,9 +74,9 @@ int main(int, char **)
     boost::shared_ptr<Administrator> referee = boost::make_shared<Administrator>();
 
     auto thread_1 = boost::thread(lala, referee);
-    // auto thread_2 = boost::thread(request_heart_beat, referee);
+    auto thread_2 = boost::thread(request_heart_beat, referee);
 
     thread_1.join();
-    // thread_2.join();
+    thread_2.join();
 
 }

@@ -2,22 +2,20 @@
 #define __PLAYER_H__
 
 #include "entity.hpp"
-#include <boost/shared_ptr.hpp>
-
-class Paddle;
-class Ball;
 
 class Player : Entity
 {
 private:
-    
-    std::string identifier;
-    boost::shared_ptr<Paddle> paddle;
-    boost::shared_ptr<Ball> ball;
+    virtual void evaluate_turn();
+    virtual std::string entity_type() const override { return "Player"; };
+    void listen_and_accept_game_invite(const channel_ptr &channel,
+                                        const std::string &consumer) const;
+
+    bool has_acknowledged_invite(const channel_ptr &channel,
+                                        const std::string &consumer) const;
 
 public:
-
-    virtual std::string get_entity_type() const override { return "Player";};
+    void find_and_participate();
 };
 
 #endif // __PLAYER_H__

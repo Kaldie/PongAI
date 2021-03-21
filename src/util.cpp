@@ -19,3 +19,13 @@ std::string create_random_string(const int& length, const std::string& prefix, c
     random_string += postfix;
     return random_string;
 }
+
+char *get_administration_exchange_name()
+{
+    return getenv("ADMINISTRATION_EXECHANGE_NAME");
+}
+
+char *get_game_exchange_name()
+{
+    return getenv("GAME_EXECHANGE_NAME");
+}

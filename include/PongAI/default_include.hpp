@@ -2,7 +2,6 @@
 #define __DEFAULT_INCLUDE_H__
 
 #include <boost/shared_ptr.hpp>
-#include <PongAI/util.hpp>
 
 class Location;
 typedef boost::shared_ptr<Location> Location_ptr;
@@ -26,7 +25,8 @@ enum FieldSize
     Large,
 };
 
-enum GameStateIntend {
+enum GameStateIntend
+{
     Requesting,
     Accepting,
     Acknowledge,
@@ -36,7 +36,8 @@ enum GameStateIntend {
     Stale,
 };
 
-enum EntityType {
+enum EntityType
+{
     Entity,
     AdministratorType,
     RefereeType,
