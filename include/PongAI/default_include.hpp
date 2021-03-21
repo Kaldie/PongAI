@@ -26,4 +26,21 @@ enum FieldSize
     Large,
 };
 
+enum GameStateIntend {
+    Requesting,
+    Accepting,
+    Acknowledge,
+    Reject,
+    Starting,
+    Running,
+    Stale,
+};
+
+enum EntityType {
+    Entity,
+    AdministratorType,
+    RefereeType,
+    PlayerType
+};
+
 #endif // __DEFAULT_INCLUDE_H__

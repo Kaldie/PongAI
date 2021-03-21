@@ -5,36 +5,54 @@
 #include <vector>
 #include <functional>
 #include <boost/shared_ptr.hpp>
+#include <PongAI/default_include.hpp>
 
 namespace boost
 {
     namespace property_tree
     {
-        template < class Key, class Data, class KeyCompare >
+        template <class Key, class Data, class KeyCompare>
         class basic_ptree;
         typedef basic_ptree<std::string, std::string, std::less<std::string>> ptree;
- 
-        }
+
+    }
 }
 
 typedef boost::shared_ptr<boost::property_tree::ptree> ptree_ptr;
 
-class GameInvite
+typedef std::vector<std::pair<EntityType, std::string>> Participents;
+
+class GameState
 {
 private:
-    static ptree_ptr create_property_tree_from_players(
-        const std::vector<std::string> &player_names);
+    static ptree_ptr create_property_tree_from_participents(
+        const Participents &participents);
+
+    static Participents create_participents_from_property_tree(
+        const ptree_ptr property_tree);
 
 public:
-    std::string game_id;
+    int current_turn = 0;
     int number_of_players;
-    std::vector<std::string> player_names;
+    std::string game_id;
+    Participents participents;
+    enum GameStateIntend intend;
+    enum FieldSize field_size;
 
-    GameInvite() {}
-    GameInvite(const std::string &game_id, const int &number_of_players);
+    GameState();
+    
+    GameState(const int &number_of_players);
 
-    static std::string to_json(const GameInvite &);
-    static GameInvite from_json(const std::string &);
+    GameState(const int &number_of_players,
+              const FieldSize &field_size);
+
+    GameState(const int &number_of_players,
+              const FieldSize &field_size,
+              const Participents &participents,
+              const GameStateIntend &intend);
+
+    static std::string to_json(const GameState &);
+    static GameState from_json(const std::string &);
 };
 
 #endif // __GAME_INVITE_H__

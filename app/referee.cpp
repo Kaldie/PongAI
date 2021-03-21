@@ -15,6 +15,8 @@
 #include <boost/log/utility/setup/file.hpp>
 #include <boost/thread.hpp>
 #include <boost/chrono.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 
 namespace logging = boost::log;
 namespace src = boost::log::sources;
@@ -43,9 +45,9 @@ void log_init()
                                      logging::trivial::info);
 }
 
-void listen_for_heartbeat(boost::shared_ptr<Administrator>& administrator) {
+void lala(boost::shared_ptr<Administrator>& administrator) {
     while (true) {
-        administrator->manage_heartbeats();
+        administrator->create_new_game(2, FieldSize::Large);
     }
 }
 
@@ -71,10 +73,10 @@ int main(int, char **)
 
     boost::shared_ptr<Administrator> referee = boost::make_shared<Administrator>();
 
-    auto thread_1 = boost::thread(listen_for_heartbeat, referee);
-    auto thread_2 = boost::thread(request_heart_beat, referee);
+    auto thread_1 = boost::thread(lala, referee);
+    // auto thread_2 = boost::thread(request_heart_beat, referee);
 
     thread_1.join();
-    thread_2.join();
+    // thread_2.join();
 
 }
