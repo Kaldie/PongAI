@@ -1,6 +1,6 @@
-#include <PongAI/administrator.hpp>
-#include <PongAI/game_invite.hpp>
-#include <PongAI/participant.hpp>
+#include <PongAI/messaging/administrator.hpp>
+#include <PongAI/messaging/messages/game_invite.hpp>
+#include <PongAI/messaging/participant.hpp>
 #include <boost/chrono.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
@@ -20,6 +20,8 @@ namespace logging = boost::log;
 namespace src = boost::log::sources;
 namespace sinks = boost::log::sinks;
 namespace keywords = boost::log::keywords;
+
+using namespace messaging;
 
 void log_init()
 {
@@ -63,7 +65,7 @@ void start_new_game(boost::shared_ptr<Administrator> &administrator)
     administrator->create_new_game(2, FieldSize::Medium);
 }
 
-void listner_for_game(boost::shared_ptr<Participant> &player)
+void listner_for_game(boost::shared_ptr<messaging::Participant> &player)
 {
     player->find_and_participate();
 }
@@ -89,7 +91,7 @@ int main(int, char **)
     std::vector<boost::thread> threads;
     for (auto i = 0; i < 4; ++i)
     {
-        boost::shared_ptr<Participant> player = boost::make_shared<Participant>();
+        boost::shared_ptr<messaging::Participant> player = boost::make_shared<messaging::Participant>();
         threads.push_back(boost::thread(listner_for_game, player));
     }
     auto thread_1 = boost::thread(start_new_game, administrator);
