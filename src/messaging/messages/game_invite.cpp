@@ -51,7 +51,6 @@ namespace messaging
             this->game_id = create_random_string(16, "game.");
             this->number_of_players = number_of_players;
             this->number_of_referees = number_of_referees;
-            this->field_size = field_size;
             this->participents = participents;
             this->intend = intend;
         }
@@ -75,7 +74,9 @@ namespace messaging
             const boost::property_tree::ptree &property_tree)
         {
             std::vector<std::pair<EntityType, std::string>> participents;
-            // auto optional_child2 = property_tree->get_child("participents");
+
+            // the declaration if necessary otherwise an rvalue would 
+            // be used as reference of the default return
             auto default_ptree = boost::property_tree::ptree();
             auto optional_child = property_tree.get_child_optional("invite.participents");
 

@@ -1,6 +1,6 @@
-#include <PongAI/ball.hpp>
+#include <PongAI/pong/objects/ball.hpp>
 #include <boost/make_shared.hpp>
-#include <PongAI/location.hpp>
+#include <PongAI/pong/location.hpp>
 
 Ball::Ball() 
 {

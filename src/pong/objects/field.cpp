@@ -1,5 +1,5 @@
-#include <PongAI/field.hpp>
-#include <PongAI/location.hpp>
+#include <PongAI/pong/objects/field.hpp>
+#include <PongAI/pong/location.hpp>
 
 #include <cmath>
 #include <vector>

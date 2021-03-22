@@ -20,23 +20,26 @@ namespace boost
 
 typedef boost::shared_ptr<boost::property_tree::ptree> ptree_ptr;
 
-typedef std::pair<EntityType, std::string> Participent;
-typedef std::vector<Participent> Participents;
+
 
 namespace messaging
 {
     namespace messages
     {
+        typedef std::pair<EntityType, std::string> Participent;
+        typedef std::vector<Participent> Participents;
+
         class GameInvite
         {
         private:
+            std::string game_id;
+
             static ptree_ptr create_property_tree_from_participents(
                 const Participents &participents);
 
             static Participents create_participents_from_property_tree(
                 const boost::property_tree::ptree &property_tree);
 
-            std::string game_id;
 
             virtual int get_number_of_participating_entity(const EntityType entity_type) const;
 
@@ -45,7 +48,6 @@ namespace messaging
             int number_of_referees;
             Participents participents;
             enum GameInviteIntend intend;
-            enum FieldSize field_size;
 
             GameInvite();
 

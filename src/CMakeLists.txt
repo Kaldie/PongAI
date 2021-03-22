@@ -1,10 +1,10 @@
 # Optionally glob, but only for CMake 3.12 or later:
-file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${PongAI_SOURCE_DIR}/include/PongAI/*.hpp" "${PongAI_SOURCE_DIR}/include/PongAI/**/*.hpp")
+file(GLOB_RECURSE HEADER_LIST CONFIGURE_DEPENDS "${PongAI_SOURCE_DIR}/include/PongAI/*.hpp")
 
-file(GLOB ENTITY_SRC CONFIGURE_DEPENDS "${PongAI_SOURCE_DIR}/src/*.cpp" "${PongAI_SOURCE_DIR}/src/**/*.cpp" "${PongAI_SOURCE_DIR}/src/**/**/*.cpp")
+file(GLOB_RECURSE ENTITY_SRC CONFIGURE_DEPENDS "${PongAI_SOURCE_DIR}/src/*.cpp")
 
 # Make an automatic library - will be static or dynamic based on user setting
-add_library(PongAI ${ENTITY_SRC} ${HEADER_LIST})
+add_library(PongAI SHARED ${ENTITY_SRC} ${HEADER_LIST})
 
 # We need this directory, and users of our library will need it too
 target_include_directories(PongAI PUBLIC ../include)
