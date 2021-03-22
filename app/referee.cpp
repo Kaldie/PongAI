@@ -1,6 +1,6 @@
 #include <PongAI/administrator.hpp>
 #include <PongAI/game_invite.hpp>
-#include <PongAI/player.hpp>
+#include <PongAI/participant.hpp>
 #include <boost/chrono.hpp>
 #include <boost/log/core.hpp>
 #include <boost/log/expressions.hpp>
@@ -41,6 +41,7 @@ void log_init()
 
     logging::core::get()->set_filter(logging::trivial::severity >=
                                      logging::trivial::debug);
+
 }
 
 void lala(boost::shared_ptr<Administrator> &administrator)
@@ -62,7 +63,7 @@ void start_new_game(boost::shared_ptr<Administrator> &administrator)
     administrator->create_new_game(2, FieldSize::Medium);
 }
 
-void listner_for_game(boost::shared_ptr<Player> &player)
+void listner_for_game(boost::shared_ptr<Participant> &player)
 {
     player->find_and_participate();
 }
@@ -86,20 +87,18 @@ int main(int, char **)
 
     boost::shared_ptr<Administrator> administrator = boost::make_shared<Administrator>();
     std::vector<boost::thread> threads;
-    for (auto i = 0; i < 12; ++i)
+    for (auto i = 0; i < 4; ++i)
     {
-        boost::shared_ptr<Player> player = boost::make_shared<Player>();
+        boost::shared_ptr<Participant> player = boost::make_shared<Participant>();
         threads.push_back(boost::thread(listner_for_game, player));
     }
     auto thread_1 = boost::thread(start_new_game, administrator);
-    wait(5);
-    auto thread_2 = boost::thread(start_new_game, administrator);
-    wait(5);
-    auto thread_3 = boost::thread(start_new_game, administrator);
+    // wait(5);
+    // auto thread_2 = boost::thread(start_new_game, administrator);
+    // wait(5);
+    // auto thread_3 = boost::thread(start_new_game, administrator);
 
     thread_1.join();
-    thread_2.join();
-    thread_3.join();
     for (int i = 0; i < threads.size(); ++i)
     {
         threads[i].join();

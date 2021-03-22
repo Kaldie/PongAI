@@ -8,7 +8,7 @@
 int main(int, char**) {
     std::cout << "Hello, world!" << std::endl << "This is Player!\n";
     
-    boost::shared_ptr<Player> player = boost::make_shared<Player>();
+    boost::shared_ptr<Participant> player = boost::make_shared<Participant>();
 
     // AmqpClient::Channel::ptr_t channel = AmqpClient::Channel::Create("localhost");
     // std::string consumer_tag = channel->BasicConsume("my_queue", "");

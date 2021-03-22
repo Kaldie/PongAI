@@ -10,42 +10,48 @@
 #include <sstream>
 #include <string>
 
-GameState::GameState()
-    : GameState(2,
+GameInvite::GameInvite()
+    : GameInvite(2,
+                1,
                 FieldSize::Medium,
                 Participents(),
-                GameStateIntend::Requesting)
-{
-}
-GameState::GameState(const int &number_of_players)
-    : GameState(number_of_players,
-                FieldSize::Medium,
-                Participents(),
-                GameStateIntend::Requesting)
+                GameInviteIntend::Requesting)
 {
 }
 
-GameState::GameState(const int &number_of_players, const FieldSize &field_size)
-    : GameState(number_of_players,
+GameInvite::GameInvite(const int &number_of_players)
+    : GameInvite(number_of_players,
+                1,
+                FieldSize::Medium,
+                Participents(),
+                GameInviteIntend::Requesting)
+{
+}
+
+GameInvite::GameInvite(const int &number_of_players, const FieldSize &field_size)
+    : GameInvite(number_of_players,
+                1,
                 field_size,
                 Participents(),
-                GameStateIntend::Requesting)
+                GameInviteIntend::Requesting)
 {
 }
 
-GameState::GameState(const int &number_of_players,
+GameInvite::GameInvite(const int &number_of_players,
+                     const int &number_of_referees,
                      const FieldSize &field_size,
                      const Participents &participents,
-                     const GameStateIntend &intend)
+                     const GameInviteIntend &intend)
 {
     this->game_id = create_random_string(16, "game.");
     this->number_of_players = number_of_players;
+    this->number_of_referees = number_of_referees;
     this->field_size = field_size;
     this->participents = participents;
     this->intend = intend;
 }
 
-boost::shared_ptr<boost::property_tree::ptree> GameState::create_property_tree_from_participents(
+boost::shared_ptr<boost::property_tree::ptree> GameInvite::create_property_tree_from_participents(
     const std::vector<std::pair<EntityType, std::string>> &participents)
 {
     auto player_tree = boost::make_shared<boost::property_tree::ptree>();
@@ -60,8 +66,8 @@ boost::shared_ptr<boost::property_tree::ptree> GameState::create_property_tree_f
     return player_tree;
 }
 
-std::vector<std::pair<EntityType, std::string>> GameState::create_participents_from_property_tree(
-    const boost::property_tree::ptree& property_tree)
+std::vector<std::pair<EntityType, std::string>> GameInvite::create_participents_from_property_tree(
+    const boost::property_tree::ptree &property_tree)
 {
     std::vector<std::pair<EntityType, std::string>> participents;
     // auto optional_child2 = property_tree->get_child("participents");
@@ -78,7 +84,7 @@ std::vector<std::pair<EntityType, std::string>> GameState::create_participents_f
     return participents;
 }
 
-std::string GameState::to_json(const GameState &invite)
+std::string GameInvite::to_json(const GameInvite &invite)
 {
     boost::property_tree::ptree out;
     out.put("invite.game_id", invite.game_id);
@@ -92,19 +98,54 @@ std::string GameState::to_json(const GameState &invite)
     return oss.str();
 }
 
-GameState GameState::from_json(const std::string &input)
+GameInvite GameInvite::from_json(const std::string &input)
 {
     std::stringstream ss;
     boost::property_tree::ptree out;
     ss << input;
     boost::property_tree::read_json(ss, out);
-    GameState game_invite;
+    GameInvite game_invite;
 
     game_invite.game_id = out.get<std::string>("invite.game_id");
     game_invite.number_of_players = out.get<int>("invite.number_of_players");
     game_invite.participents = create_participents_from_property_tree(out);
     game_invite.current_turn = out.get<int>("invite.current_turn");
-    game_invite.intend = (GameStateIntend)out.get<int>("invite.intend");
+    game_invite.intend = (GameInviteIntend)out.get<int>("invite.intend");
 
     return game_invite;
+}
+
+int GameInvite::get_number_of_participating_entity(const EntityType entity_type) const
+{
+
+    return std::count_if(participents.begin(),
+                         participents.end(), 
+                         [entity_type](Participent participent) { return participent.first == entity_type; });
+}
+
+bool GameInvite::requires_entity(const EntityType &entity_type) const
+{
+    bool requires_entity;
+    switch (entity_type)
+    {
+    case EntityType::RefereeType:
+    {
+        requires_entity = get_number_of_participating_entity(EntityType::RefereeType) < number_of_referees;
+        break;
+    };
+    case EntityType::PlayerType:
+    {
+        requires_entity = get_number_of_participating_entity(EntityType::PlayerType) < number_of_players;
+        break;
+    };
+    default:
+        throw "Unknown entity type";
+    }
+    return requires_entity;
+}
+
+bool GameInvite::has_enough_participents() const
+{
+    // if it does not require referees or players then it has enough
+    return !(requires_entity(EntityType::RefereeType) || requires_entity(EntityType::PlayerType));
 }

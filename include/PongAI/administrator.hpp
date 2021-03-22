@@ -14,7 +14,7 @@ namespace AmqpClient
 
 typedef boost::shared_ptr<AmqpClient::Channel> channel_ptr;
 
-class GameState;
+class GameInvite;
 
 class Administrator : public Entity
 {
@@ -22,18 +22,18 @@ private:
 
     void listnen_for_participants(const channel_ptr &channel,
                                   const std::string &consumer,
-                                  GameState *accepted_game_state) const;
+                                  GameInvite *accepted_game_state) const;
 
-    bool should_acknowledge(GameState *current_state,
-                            const GameState &request) const;
+    bool should_acknowledge(GameInvite *current_state,
+                            const GameInvite &request) const;
 
     void respond_game_invite_acceptance(const channel_ptr &channel,
-                                        GameState *current_game_state,
-                                        GameState *request,
+                                        GameInvite *current_game_state,
+                                        GameInvite *request,
                                         const bool should_accept) const;
 
     void send_game_state(const channel_ptr &channel,
-                         const GameState &game_state) const;
+                         const GameInvite &game_state) const;
 
     virtual std::string entity_type()
         const override { return "Administrator"; };

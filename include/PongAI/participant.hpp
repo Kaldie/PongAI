@@ -1,12 +1,11 @@
-#ifndef __PLAYER_H__
-#define __PLAYER_H__
+#ifndef __PARTICIPANT_H__
+#define __PARTICIPANT_H__
 
 #include "entity.hpp"
 
-class Player : Entity
+class Participant : Entity
 {
 private:
-    virtual void evaluate_turn(){};
     virtual std::string entity_type() const override { return "Player"; };
     void listen_and_accept_game_invite(const channel_ptr &channel,
                                         const std::string &consumer) const;
@@ -17,8 +16,8 @@ private:
 public:
     void find_and_participate();
 
-    Player(){};
-    ~Player(){};
+    Participant(){};
+    ~Participant(){};
 };
 
-#endif // __PLAYER_H__
+#endif // __PARTICIPANT_H__

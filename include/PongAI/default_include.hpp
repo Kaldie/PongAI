@@ -9,8 +9,8 @@ typedef boost::shared_ptr<Location> Location_ptr;
 class Paddle;
 typedef boost::shared_ptr<Paddle> Paddle_ptr;
 
-class Player;
-typedef boost::shared_ptr<Player> Player_ptr;
+class Participant;
+typedef boost::shared_ptr<Participant> Player_ptr;
 
 class Ball;
 typedef boost::shared_ptr<Ball> Ball_ptr;
@@ -25,7 +25,7 @@ enum FieldSize
     Large,
 };
 
-enum GameStateIntend
+enum GameInviteIntend
 {
     Requesting,
     Accepting,

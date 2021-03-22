@@ -68,7 +68,7 @@ FROM build_SimpleAmqpClient
 COPY . /usr/src/myapp
 WORKDIR /usr/src/myapp
 
-RUN mkdir build && \
-    cd build && \
-    cmake .. && \
-    cmake --build .
+# RUN mkdir build && \
+#     cd build && \
+#     cmake .. && \
+#     cmake --build .
