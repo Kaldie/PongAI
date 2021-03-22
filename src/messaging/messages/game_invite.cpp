@@ -95,7 +95,6 @@ namespace messaging
             out.put("invite.game_id", invite.game_id);
             out.put("invite.number_of_players", invite.number_of_players);
             out.add_child("invite.participents", *create_property_tree_from_participents(invite.participents));
-            out.put("invite.current_turn", invite.current_turn);
             out.put("invite.intend", invite.intend);
 
             std::ostringstream oss;
@@ -114,7 +113,6 @@ namespace messaging
             game_invite.game_id = out.get<std::string>("invite.game_id");
             game_invite.number_of_players = out.get<int>("invite.number_of_players");
             game_invite.participents = create_participents_from_property_tree(out);
-            game_invite.current_turn = out.get<int>("invite.current_turn");
             game_invite.intend = (GameInviteIntend)out.get<int>("invite.intend");
 
             return game_invite;

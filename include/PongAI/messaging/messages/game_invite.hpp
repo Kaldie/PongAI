@@ -41,7 +41,6 @@ namespace messaging
             virtual int get_number_of_participating_entity(const EntityType entity_type) const;
 
         public:
-            int current_turn = 0;
             int number_of_players;
             int number_of_referees;
             Participents participents;

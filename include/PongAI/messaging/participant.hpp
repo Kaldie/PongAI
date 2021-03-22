@@ -9,6 +9,7 @@ namespace messaging
     class Participant : Entity
     {
     private:
+        // TODO: #1 Remove this!!!
         virtual std::string entity_type() const override { return "Player"; };
         void listen_and_accept_game_invite(const channel_ptr &channel,
                                            const std::string &consumer) const;
