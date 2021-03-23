@@ -31,10 +31,18 @@ namespace messaging
             const channel_ptr &channel,
             const messages::GameInvite &game_invite) const;
 
-        virtual messages::GameState_ptr listen_for_game_message(
+        virtual bool listen_for_game_message(
             const channel_ptr &channel,
             const std::string &consumer,
-            AmqpClient::Envelope_ptr &envelope);
+            AmqpClient::Envelope_ptr &envelope) const;
+
+        virtual std::string respond_on_game_message(
+            const std::string &game_message);
+
+        void send_message(
+            const channel_ptr &channel,
+            const messages::GameInvite &invite,
+            const std::string &message) const;
 
     public:
         void find_and_accept();

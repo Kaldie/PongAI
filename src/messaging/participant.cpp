@@ -83,17 +83,37 @@ namespace messaging
                                              game_invite.get_game_id());
     }
 
-    void Participant::listen_for_game_message(
+    bool Participant::listen_for_game_message(
         const channel_ptr &channel,
         const std::string &consumer,
-        AmqpClient::Envelope::ptr_t& envelope) {
-            envelope = channel->BasicConsumeMessage(consumer);
+        AmqpClient::Envelope::ptr_t &envelope)
+    {
+        envelope = channel->BasicConsumeMessage(consumer);
+        return true;
     };
 
     void Participant::participate(const messages::GameInvite &game_invite)
     {
         channel_ptr channel = create_channel();
         auto consumer = prepare_for_game(channel, game_invite);
+        AmqpClient::Envelope_ptr envelope;
+        std::string response;
+        bool found_game_message(false);
+        do
+        {
+            found_game_message = listen_for_game_message(
+                channel, consumer, envelope);
+            if (found_game_message)
+            {
+                response = respond_on_game_message(envelope->Message()->Body());
+                send_message(channel, game_invite, response);
+            }
+        } while (found_game_message);
     }
 
+    std::string Participant::respond_on_game_message(
+        const std::string &game_message)
+    {
+        return game_message;
+    }
 };
