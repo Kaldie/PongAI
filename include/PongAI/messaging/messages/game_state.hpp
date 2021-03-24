@@ -8,10 +8,9 @@ namespace messaging
 {
     namespace messages
     {
-        typedef boost::shared_ptr<GameState> GameState_ptr;
         
-        class GameState: GameInvite
-        {};
+        class GameState: GameInvite{};
+        typedef boost::shared_ptr<GameState> GameState_ptr;
     };
 };
 #endif // __GAME_STATE_H__

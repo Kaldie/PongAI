@@ -9,18 +9,20 @@
 namespace messaging
 {
 
-    void Participant::find_and_accept()
+    GameInvite_ptr Participant::find_and_accept()
     {
 
         channel_ptr channel = create_channel();
+        GameInvite_ptr game_invite;
         auto consumer = prepare_listen_exchange_topic(channel,
                                                       get_game_exchange_name(),
                                                       "game.#");
         do
         {
             BOOST_LOG_TRIVIAL(info) << "Listening for new game";
-            listen_and_accept_game_invite(channel, consumer);
+            game_invite = listen_and_accept_game_invite(channel, consumer);
         } while (!has_acknowledged_invite(channel, consumer));
+        return game_invite;
     }
 
     bool Participant::has_acknowledged_invite(const channel_ptr &channel,
@@ -49,50 +51,53 @@ namespace messaging
         return has_accepted;
     }
 
-    void Participant::listen_and_accept_game_invite(const channel_ptr &channel,
-                                                    const std::string &consumer) const
+    GameInvite_ptr Participant::listen_and_accept_game_invite(const channel_ptr &channel,
+                                                              const std::string &consumer) const
     {
-        using messages::GameInvite;
+        GameInvite_ptr game_invite = boost::make_shared<messages::GameInvite>();
         AmqpClient::Envelope::ptr_t envelope = channel->BasicConsumeMessage(consumer);
-        GameInvite game_invite = GameInvite::from_json(envelope->Message()->Body());
+        (*game_invite) = messages::GameInvite::from_json(envelope->Message()->Body());
 
-        if (game_invite.intend == GameInviteIntend::Requesting)
+        if (game_invite->intend == GameInviteIntend::Requesting)
         {
             BOOST_LOG_TRIVIAL(info) << "Heared a game invite!";
 
-            game_invite.participents.push_back(std::make_pair(
+            game_invite->participents.push_back(std::make_pair(
                 EntityType::PlayerType, get_name()));
 
-            game_invite.intend = GameInviteIntend::Accepting;
+            game_invite->intend = GameInviteIntend::Accepting;
 
             BOOST_LOG_TRIVIAL(info) << "Sending an invite accept message";
 
             channel->BasicPublish(
                 get_game_exchange_name(),
-                game_invite.get_game_id(),
-                AmqpClient::BasicMessage::Create(GameInvite::to_json(game_invite)));
+                game_invite->get_game_id(),
+                AmqpClient::BasicMessage::Create(messages::GameInvite::to_json((*game_invite))));
+        } else {
+            game_invite.reset();
         }
+        return game_invite;
     };
 
     std::string Participant::prepare_for_game(
         const channel_ptr &channel,
-        const messages::GameInvite &game_invite) const
+        const GameInvite_ptr &game_invite) const
     {
         return prepare_listen_exchange_topic(channel,
                                              get_game_exchange_name(),
-                                             game_invite.get_game_id());
+                                             game_invite->get_game_id());
     }
 
     bool Participant::listen_for_game_message(
         const channel_ptr &channel,
         const std::string &consumer,
-        AmqpClient::Envelope::ptr_t &envelope)
+        AmqpClient::Envelope::ptr_t &envelope) const
     {
         envelope = channel->BasicConsumeMessage(consumer);
         return true;
     };
 
-    void Participant::participate(const messages::GameInvite &game_invite)
+    void Participant::participate(const GameInvite_ptr &game_invite)
     {
         channel_ptr channel = create_channel();
         auto consumer = prepare_for_game(channel, game_invite);
@@ -116,4 +121,15 @@ namespace messaging
     {
         return game_message;
     }
+
+    void Participant::send_message(
+        const channel_ptr &channel,
+        const GameInvite_ptr &invite,
+        const std::string &message) const
+    {
+        channel->BasicPublish(get_game_exchange_name(),
+                              invite->get_game_id(),
+                              AmqpClient::BasicMessage::Create(message));
+    }
+
 };

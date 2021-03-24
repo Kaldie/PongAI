@@ -78,7 +78,7 @@ namespace messaging
     {
         if (should_accept)
         {
-            BOOST_LOG_TRIVIAL(info) << "Accepting Entity to the game";
+            BOOST_LOG_TRIVIAL(info) << "Accepting " << request->participents.back().second << " to the game";
             current_game_state->intend = GameInviteIntend::Acknowledge;
             // Send the player an Acknowledge
             send_game_state(channel, *current_game_state);
@@ -118,7 +118,6 @@ namespace messaging
 
             if (has_found_message)
             {
-                BOOST_LOG_TRIVIAL(debug) << "has_found_message";
                 GameInvite game_state = GameInvite::from_json(envelope->Message()->Body());
 
                 if (game_state.intend == GameInviteIntend::Accepting)
@@ -133,6 +132,7 @@ namespace messaging
             else
             {
                 --timeout_number;
+                BOOST_LOG_TRIVIAL(info) << "Timeout reached on acceptations";
             }
         } while (timeout_number >= 0 &&
                  accepted_game_state->intend != GameInviteIntend::Starting);

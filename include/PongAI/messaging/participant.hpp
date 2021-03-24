@@ -15,21 +15,38 @@ namespace AmqpClient
 
 namespace messaging
 {
+
+    namespace messages
+    {
+        class GameInvite;
+    } // namespace messages
+}
+
+namespace messaging
+{
+
+    typedef boost::shared_ptr<messages::GameInvite> GameInvite_ptr;
+    
     class Participant : Entity
     {
     private:
         // TODO: #1 Remove this!!!
         virtual std::string entity_type() const override { return "Player"; };
 
-        void listen_and_accept_game_invite(const channel_ptr &channel,
-                                           const std::string &consumer) const;
+        GameInvite_ptr listen_and_accept_game_invite(const channel_ptr &channel,
+                                                     const std::string &consumer) const;
 
         bool has_acknowledged_invite(const channel_ptr &channel,
                                      const std::string &consumer) const;
 
+        void send_message(
+            const channel_ptr &channel,
+            const GameInvite_ptr &invite,
+            const std::string &message) const;
+
         virtual std::string prepare_for_game(
             const channel_ptr &channel,
-            const messages::GameInvite &game_invite) const;
+            const GameInvite_ptr &game_invite) const;
 
         virtual bool listen_for_game_message(
             const channel_ptr &channel,
@@ -39,14 +56,10 @@ namespace messaging
         virtual std::string respond_on_game_message(
             const std::string &game_message);
 
-        void send_message(
-            const channel_ptr &channel,
-            const messages::GameInvite &invite,
-            const std::string &message) const;
-
     public:
-        void find_and_accept();
-        void participate(const messages::GameInvite &game_invite);
+
+        GameInvite_ptr find_and_accept();
+        void participate(const GameInvite_ptr &game_invite);
 
         Participant(){};
         ~Participant(){};
