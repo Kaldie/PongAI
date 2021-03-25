@@ -44,6 +44,9 @@ namespace messaging
             const GameInvite_ptr &invite,
             const std::string &message) const;
 
+        virtual void prepare_for_game(
+            const GameInvite_ptr &game_invite) const {};
+
         virtual std::string prepare_for_game(
             const channel_ptr &channel,
             const GameInvite_ptr &game_invite) const;

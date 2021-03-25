@@ -73,7 +73,9 @@ namespace messaging
                 get_game_exchange_name(),
                 game_invite->get_game_id(),
                 AmqpClient::BasicMessage::Create(messages::GameInvite::to_json((*game_invite))));
-        } else {
+        }
+        else
+        {
             game_invite.reset();
         }
         return game_invite;
@@ -82,7 +84,8 @@ namespace messaging
     std::string Participant::prepare_for_game(
         const channel_ptr &channel,
         const GameInvite_ptr &game_invite) const
-    {
+    {   
+        prepare_for_game(game_invite);
         return prepare_listen_exchange_topic(channel,
                                              get_game_exchange_name(),
                                              game_invite->get_game_id());
@@ -95,7 +98,7 @@ namespace messaging
     {
         envelope = channel->BasicConsumeMessage(consumer);
         return true;
-    };
+    }
 
     void Participant::participate(const GameInvite_ptr &game_invite)
     {

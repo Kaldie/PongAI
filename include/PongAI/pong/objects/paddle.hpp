@@ -2,16 +2,29 @@
 #define __PADDLE_H__
 
 #include <PongAI/default_include.hpp>
+#include <PongAI/pong/objects/object.hpp>
 
-class Paddle
+namespace pong::objects
 {
-private:
-    double width;
-    Location_ptr location;
+    class Paddle: Object
+    {
+    private:
+        double width;
+        double height;
+        Point2D center;
+        Polygon2D polygon;
 
-    /* data */
-public:
-    Paddle();
-};
+        void generate_polygon();
+    public:
+        Paddle();
+        Paddle(const Point2D& center, const double& width, const double& height);
+        Paddle(const boost::property_tree::ptree& ptree);
+
+        void move(const double& time);
+
+        virtual boost::property_tree::ptree to_ptree() const;
+
+    };
+} // namespace pong::objects
 
 #endif // __PADDLE_H__

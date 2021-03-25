@@ -2,31 +2,38 @@
 #define __FIELD_H__
 
 #include <PongAI/default_include.hpp>
+#include <PongAI/pong/objects/object.hpp>
+#include <PongAI/pong/objects/ball.hpp>
+#include <PongAI/pong/objects/paddle.hpp>
 #include <vector>
 
-class Field
+namespace pong::objects
 {
-private:
-    int length = 100;
-    int width = 100;
-    double default_speed = 5;
-    double speed_multiplier = 1.005;
-    int current_turn = 0;
 
-    std::vector<Paddle_ptr> paddles = {};
-    std::vector<Ball_ptr> balls = {};
+    class Field : Object
+    {
+    private:
+        double height = 100;
+        double width = 100;
 
-public:
-    Field();
-    int turn() { return current_turn; };
-    void set_speed_multiplier(double value) { speed_multiplier = value; };
-    void end_turn() { ++current_turn; };
+        std::vector<Paddle> paddles = {};
+        std::vector<Ball> balls = {};
 
-    double speed();
-    bool isInside(Location_ptr);
+        Polygon2D polygon;
 
-    void add_ball(Ball_ptr);
-    void add_paddle(Paddle_ptr);
-};
+    public:
+        Field();
+        Field(const boost::property_tree::ptree &ptree);
+
+        Field(const double &height, const double &width);
+
+        ~Field(){};
+
+        void add_ball(Ball ball);
+        void add_paddle(Paddle paddle);
+
+        virtual boost::property_tree::ptree to_ptree() const override{};
+    };
+} // namespace objects
 
 #endif // __FIELD_H__

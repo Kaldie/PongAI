@@ -84,7 +84,7 @@ namespace messaging
             send_game_state(channel, *current_game_state);
             BOOST_LOG_TRIVIAL(debug) << "Number of players reqeusted: " << current_game_state->number_of_players;
             BOOST_LOG_TRIVIAL(debug) << "Current number of players + refs accepted: " << current_game_state->participents.size();
-            BOOST_LOG_TRIVIAL(debug) << "current_game_state->has_not_enough_participents()" << current_game_state->has_enough_participents();
+            BOOST_LOG_TRIVIAL(debug) << "current_game_state->has_enough_participents()" << current_game_state->has_enough_participents();
             if (current_game_state->has_enough_participents())
             {
                 current_game_state->intend = GameInviteIntend::Starting;
@@ -134,7 +134,7 @@ namespace messaging
                 --timeout_number;
                 BOOST_LOG_TRIVIAL(info) << "Timeout reached on acceptations";
             }
-        } while (timeout_number >= 0 &&
+        } while (timeout_number > 0 &&
                  accepted_game_state->intend != GameInviteIntend::Starting);
     }
 };

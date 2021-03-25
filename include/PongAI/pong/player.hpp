@@ -11,29 +11,34 @@ namespace messaging {
     namespace messages
     {
         class GameInvite;
-    } // namespace messages
-    
+    }
 }
+
 
 namespace pong
 {
+    typedef boost::shared_ptr<messaging::messages::GameInvite> GameInvite_ptr;
+
     class Player : messaging::Participant
     {
     private:
         
-        Ball ball;
-        Paddle paddle;
-        Field field;
+        // objects::Ball ball;
+        // objects::Paddle paddle;
+        objects::Field field;
         
         
         virtual std::string entity_type() const override { return "Player"; };
-        std::string prepare_listen_game(const messaging::messages::GameInvite& game_invite);
-        
-        void respond_on_input();
+
+        virtual void prepare_for_game(
+            const GameInvite_ptr &game_invite) const override {};
+
+        virtual std::string respond_on_game_message(
+            const std::string &game_message);
 
 
     public:
-        virtual void play_game();
+        virtual void play_game(){};
     };
 };
 

@@ -95,13 +95,13 @@ int main(int, char **)
         threads.push_back(boost::thread(listner_for_game, player));
     }
     auto thread_1 = boost::thread(start_new_game, administrator);
-    wait(5);
-    auto thread_2 = boost::thread(start_new_game, administrator);
+    // wait(5);
+    // auto thread_2 = boost::thread(start_new_game, administrator);
     // wait(5);
     // auto thread_3 = boost::thread(start_new_game, administrator);
 
     thread_1.join();
-    thread_2.join();
+    // thread_2.join();
     for (int i = 0; i < threads.size(); ++i)
     {
         threads[i].join();

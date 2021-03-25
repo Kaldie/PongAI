@@ -17,7 +17,7 @@ find_package(Boost COMPONENTS log random thread REQUIRED)
 target_link_libraries(PongAI PRIVATE Boost::boost Boost::log Boost::random Boost::thread SimpleAmqpClient)
 
 # All users of this library will need at least C++11
-target_compile_features(PongAI PUBLIC cxx_std_11)
+target_compile_features(PongAI PUBLIC cxx_std_14)
 
 # IDEs should put the headers in a nice place
 source_group(
