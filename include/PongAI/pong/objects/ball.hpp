@@ -25,7 +25,7 @@ namespace pong
             void increase_speed(const double& increase);
             void decrease_speed(const double& increase);
             Line2D predict_movement(const double& time_passed);
-
+            void move(const Point2D& location);
             virtual boost::property_tree::ptree to_ptree() const override;
         };
 

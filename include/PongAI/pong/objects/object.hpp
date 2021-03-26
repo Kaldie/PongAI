@@ -19,17 +19,24 @@ namespace pong
         class Object
         {
         private:
-            std::string id = "lala";
+            std::string id;
+            std::string owner;
 
         public:
-            Object(){};
+            Object();
+            Object(const std::string& id, const std::string& owner);
+            Object(const boost::property_tree::ptree& tree);
             virtual ~Object(){};
 
-            virtual boost::property_tree::ptree to_ptree() const = 0;
+            void set_owner(const std::string& owner);
+            std::string get_owner() const;
+            void set_id(const std::string& id);
+            std::string get_id() const;
+
+            virtual boost::property_tree::ptree to_ptree() const;
         };
 
-        void update_ptree(const Point2D &point,
-                          boost::property_tree::ptree *tree);
+        boost::property_tree::ptree to_ptree(const Point2D &point);
 
         Point2D from_ptree(const boost::property_tree::ptree &ptree);
     };

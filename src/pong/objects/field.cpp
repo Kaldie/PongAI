@@ -25,6 +25,8 @@ namespace pong::objects
         height = ptree.get<int>("height");
         width = ptree.get<int>("width");
 
+        polygon = Polygon2D({{{0, 0}, {width, 0}, {width, height}, {0, height}, {0, 0}}});
+
         auto paddles = ptree.get_child_optional("paddles");
         auto balls = ptree.get_child_optional("balls");
 
@@ -54,4 +56,32 @@ namespace pong::objects
     {
         paddles.push_back(paddle);
     }
+
+    boost::property_tree::ptree Field::to_ptree() const
+    {
+        boost::property_tree::ptree ptree;
+        ptree.put("width", width);
+        ptree.put("height", height);
+
+        if (paddles.size() > 0)
+        {
+            boost::property_tree::ptree paddles_ptree;
+            for (auto paddle : paddles)
+            {
+                paddles_ptree.add_child("", paddle.to_ptree());
+            }
+            ptree.add_child("paddles", paddles_ptree);
+        }
+
+        if (balls.size() > 0)
+        {
+            boost::property_tree::ptree balls_ptree;
+            for (auto ball : balls)
+            {
+                balls_ptree.add_child("", ball.to_ptree());
+            }
+            ptree.add_child("balls", balls_ptree);
+        }
+    };
+
 } // namespace pong

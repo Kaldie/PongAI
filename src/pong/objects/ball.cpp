@@ -23,10 +23,11 @@ namespace pong::objects
     }
 
     Ball::Ball(const boost::property_tree::ptree &ptree)
+        : Object{ptree.get_child("object")},
+          location{from_ptree(ptree.get_child("location"))},
+          angle{ptree.get<double>("angle")},
+          speed{ptree.get<double>("speed")}
     {
-        location = from_ptree(ptree.get_child("location"));
-        angle = ptree.get<double>("angle");
-        speed = ptree.get<double>("speed");
     }
 
     boost::property_tree::ptree Ball::to_ptree() const
@@ -35,9 +36,8 @@ namespace pong::objects
         ptree.put("angle", angle);
         ptree.put("speed", speed);
 
-        boost::property_tree::ptree location_ptree;
-        update_ptree(location, &location_ptree);
-        ptree.add_child("location", location_ptree);
+        ptree.add_child("location", pong::objects::to_ptree(location));
+        ptree.add_child("object", Object::to_ptree());
         return ptree;
     }
 
@@ -58,4 +58,8 @@ namespace pong::objects
                               location.y() + cos(angle) * time * speed));
     }
 
+    void Ball::move(const Point2D &location)
+    {
+        this->location = location;
+    }
 }

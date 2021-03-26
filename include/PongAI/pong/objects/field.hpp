@@ -32,7 +32,7 @@ namespace pong::objects
         void add_ball(Ball ball);
         void add_paddle(Paddle paddle);
 
-        virtual boost::property_tree::ptree to_ptree() const override{};
+        virtual boost::property_tree::ptree to_ptree() const override;
     };
 } // namespace objects
 
