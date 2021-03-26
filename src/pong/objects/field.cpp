@@ -82,6 +82,7 @@ namespace pong::objects
             }
             ptree.add_child("balls", balls_ptree);
         }
+        return ptree;
     };
 
 } // namespace pong
