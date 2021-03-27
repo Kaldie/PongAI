@@ -3,19 +3,21 @@
 
 #include <PongAI/default_include.hpp>
 #include <PongAI/pong/objects/object.hpp>
-#include <PongAI/pong/objects/ball.hpp>
-#include <PongAI/pong/objects/paddle.hpp>
 #include <vector>
 
 namespace pong::objects
 {
+    class Goal;
+    class Paddel;
+    class Ball;
 
-    class Field : Object
+    class Field : public Object
     {
     private:
         double height = 100;
         double width = 100;
 
+        std::vector<Goal> goals = {};
         std::vector<Paddle> paddles = {};
         std::vector<Ball> balls = {};
 
@@ -29,8 +31,8 @@ namespace pong::objects
 
         ~Field(){};
 
-        void add_ball(Ball ball);
-        void add_paddle(Paddle paddle);
+        void add_ball(const Ball& ball);
+        void add_paddle(const Paddle& paddle);
 
         virtual boost::property_tree::ptree to_ptree() const override;
     };

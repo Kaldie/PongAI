@@ -19,7 +19,7 @@ namespace pong
 {
     typedef boost::shared_ptr<messaging::messages::GameInvite> GameInvite_ptr;
 
-    class Player : messaging::Participant
+    class Player : public messaging::Participant
     {
     private:
         
@@ -31,7 +31,7 @@ namespace pong
         virtual std::string entity_type() const override { return "Player"; };
 
         virtual void prepare_for_game(
-            const GameInvite_ptr &game_invite) const override {};
+            const messaging::messages::GameInvite &game_invite) override {};
 
         virtual std::string respond_on_game_message(
             const std::string &game_message);

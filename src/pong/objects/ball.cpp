@@ -62,4 +62,20 @@ namespace pong::objects
     {
         this->location = location;
     }
+
+    Point2D Ball::get_location() const
+    {
+        return location;
+    }
+
+    void Ball::set_angle(const double &angle)
+    {
+        this->angle = angle;
+    }
+
+    void Ball::set_speed(const double &speed)
+    {
+        this->speed = speed;
+    }
+
 }

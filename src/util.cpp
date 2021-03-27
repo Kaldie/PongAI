@@ -11,13 +11,19 @@ std::string create_random_string(const int& length, const std::string& prefix, c
         "1234567890");
     boost::random::random_device rng;
     boost::random::uniform_int_distribution<> index_dist(0, chars.size() - 1);
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < length; ++i)
     {
         random_string += chars[index_dist(rng)];
     }
 
     random_string += postfix;
     return random_string;
+}
+
+int get_random_integer(const int& max, const int& min) {
+    boost::random::random_device rng;
+    boost::random::uniform_int_distribution<> index_dist(min, max);
+    return index_dist(rng);
 }
 
 char *get_administration_exchange_name()

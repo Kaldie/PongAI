@@ -1,40 +1,38 @@
 #include <PongAI/pong/location.hpp>
-#include <PongAI/pong/objects/paddle.hpp>
+#include <PongAI/pong/objects/goal.hpp>
 #include <boost/make_shared.hpp>
 
 namespace pong::objects
 {
-    Paddle::Paddle(const Point2D &center, const double &width,
-                   const double &height, const double &speed)
-        : center{center}, width{width}, height{height}, speed{speed}
+    Goal::Goal(const Point2D &center, const double &width,
+                   const double &height)
+        : center{center}, width{width}, height{height}
     {
         generate_polygon();
     }
 
-    Paddle::Paddle()
-        : Paddle({0.0, 0.0}, // location
+    Goal::Goal()
+        : Goal({0.0, 0.0}, // location
                  10,         // width
-                 5,          // height
-                 5)          // speed
+                 5)          // height)
     {
     }
 
-    Paddle::Paddle(const boost::property_tree::ptree &ptree)
+    Goal::Goal(const boost::property_tree::ptree &ptree)
         : Object{ptree.get_child("object")},
           center{from_ptree(ptree.get_child("center"))},
           width{ptree.get<double>("width")},
-          height{ptree.get<double>("height")},
-          speed{ptree.get<double>("speed")}
+          height{ptree.get<double>("height")}
     {
         generate_polygon();
     }
 
-    void Paddle::generate_polygon()
+    void Goal::generate_polygon()
     {
         generate_polygon(center, &polygon);
     }
 
-    void Paddle::generate_polygon(const Point2D &location, Polygon2D *polygon) const
+    void Goal::generate_polygon(const Point2D &location, Polygon2D *polygon) const
     {
         double half_width = 0.5 * width;
         double half_height = 0.5 * height;
@@ -48,27 +46,18 @@ namespace pong::objects
         polygon->outer().swap(new_polygon);
     }
 
-    boost::property_tree::ptree Paddle::to_ptree() const
+    boost::property_tree::ptree Goal::to_ptree() const
     {
         boost::property_tree::ptree ptree;
         ptree.put("width", width);
         ptree.put("height", height);
-        ptree.put("speed", speed);
 
         ptree.add_child("center", pong::objects::to_ptree(center));
         ptree.add_child("object", Object::to_ptree());
         return ptree;
     }
 
-    Polygon2D Paddle::predict_polygon(const double &time) const
-    {
-        Polygon2D polygon_prediction;
-        Point2D new_location(center.x() + time * speed, center.y());
-        generate_polygon(new_location, &polygon_prediction);
-        return polygon_prediction;
-    }
-
-    void Paddle::move(const Point2D &new_location)
+    void Goal::move(const Point2D &new_location)
     {
         center = new_location;
     }

@@ -8,7 +8,7 @@ namespace pong
 {
     namespace objects
     {
-        class Ball : Object
+        class Ball : public Object
         {
         private:
             /* data */
@@ -17,15 +17,22 @@ namespace pong
             Point2D location;
 
         public:
-            Ball(const double& speed, const Point2D& location);
-            Ball(const double& speed);
+            Ball(const double &speed, const Point2D &location);
+            Ball(const double &speed);
             Ball();
-            Ball(const boost::property_tree::ptree& tree);
+            Ball(const boost::property_tree::ptree &tree);
 
-            void increase_speed(const double& increase);
-            void decrease_speed(const double& increase);
-            Line2D predict_movement(const double& time_passed);
-            void move(const Point2D& location);
+            void increase_speed(const double &increase);
+            void decrease_speed(const double &increase);
+
+            void set_angle(const double &angle);
+            void set_speed(const double &angle);
+
+            Line2D predict_movement(const double &time_passed);
+            Point2D get_location() const;
+
+            void move(const Point2D &location);
+
             virtual boost::property_tree::ptree to_ptree() const override;
         };
 

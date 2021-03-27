@@ -83,12 +83,11 @@ namespace messaging
 
     std::string Participant::prepare_for_game(
         const channel_ptr &channel,
-        const GameInvite_ptr &game_invite) const
-    {   
+        const GameInvite &game_invite) {   
         prepare_for_game(game_invite);
         return prepare_listen_exchange_topic(channel,
                                              get_game_exchange_name(),
-                                             game_invite->get_game_id());
+                                             game_invite.get_game_id());
     }
 
     bool Participant::listen_for_game_message(
@@ -100,7 +99,7 @@ namespace messaging
         return true;
     }
 
-    void Participant::participate(const GameInvite_ptr &game_invite)
+    void Participant::participate(const GameInvite &game_invite)
     {
         channel_ptr channel = create_channel();
         auto consumer = prepare_for_game(channel, game_invite);
@@ -127,11 +126,11 @@ namespace messaging
 
     void Participant::send_message(
         const channel_ptr &channel,
-        const GameInvite_ptr &invite,
+        const GameInvite &invite,
         const std::string &message) const
     {
         channel->BasicPublish(get_game_exchange_name(),
-                              invite->get_game_id(),
+                              invite.get_game_id(),
                               AmqpClient::BasicMessage::Create(message));
     }
 
