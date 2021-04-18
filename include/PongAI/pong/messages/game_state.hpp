@@ -21,7 +21,7 @@ namespace pong::objects
 namespace pong::messages
 {
 
-    class GameState : messaging::messages::GameInvite
+    class GameState
     {
 
     private:
@@ -29,9 +29,12 @@ namespace pong::messages
 
     public:
         GameState();
+        GameState(const pong::objects::Field_ptr& field);
 
         static GameState from_json(const std::string &json_string);
         static std::string to_json(const GameState game_state);
+
+        void set_field(const pong::objects::Field_ptr& field);
     };
 } // namespace messages
 

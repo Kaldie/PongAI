@@ -8,7 +8,7 @@
 namespace pong::objects
 {
     class Goal;
-    class Paddel;
+    class Paddle;
     class Ball;
 
     class Field : public Object

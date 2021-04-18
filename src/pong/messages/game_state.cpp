@@ -1,5 +1,8 @@
 #include <PongAI/pong/messages/game_state.hpp>
+#include <PongAI/pong/objects/ball.hpp>
 #include <PongAI/pong/objects/field.hpp>
+#include <PongAI/pong/objects/goal.hpp>
+#include <PongAI/pong/objects/paddle.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/shared_ptr.hpp>
@@ -13,8 +16,14 @@ namespace pong
     namespace messages
     {
 
-        GameState::GameState(){
+        GameState::GameState()
+        {
             field = boost::make_shared<objects::Field>();
+        }
+
+        GameState::GameState(const pong::objects::Field_ptr &field)
+        {
+            this->field = field;
         }
 
         GameState GameState::from_json(const std::string &input)
@@ -38,6 +47,11 @@ namespace pong
             std::ostringstream oss;
             boost::property_tree::write_json(oss, out);
             return oss.str();
+        }
+
+        void GameState::set_field(const pong::objects::Field_ptr &field)
+        {
+            this->field = field;
         }
 
     } // namespace messages

@@ -20,14 +20,10 @@ namespace boost
 
 typedef boost::shared_ptr<boost::property_tree::ptree> ptree_ptr;
 
-
-
 namespace messaging
 {
     namespace messages
     {
-        typedef std::pair<EntityType, std::string> Participent;
-        typedef std::vector<Participent> Participents;
 
         class GameInvite
         {

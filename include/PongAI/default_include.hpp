@@ -2,6 +2,8 @@
 #define __DEFAULT_INCLUDE_H__
 
 #include <boost/shared_ptr.hpp>
+#include <vector>
+#include <string>
 
 enum FieldSize
 {
@@ -28,5 +30,8 @@ enum EntityType
     RefereeType,
     PlayerType
 };
+
+typedef std::pair<EntityType, std::string> Participent;
+typedef std::vector<Participent> Participents;
 
 #endif // __DEFAULT_INCLUDE_H__

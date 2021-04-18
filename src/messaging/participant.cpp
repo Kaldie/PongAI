@@ -1,6 +1,6 @@
 #include <PongAI/messaging/messages/game_invite.hpp>
-#include <PongAI/messaging/messages/game_state.hpp>
 #include <PongAI/messaging/participant.hpp>
+#include <PongAI/pong/messages/game_state.hpp>
 #include <PongAI/util.hpp>
 #include <SimpleAmqpClient/Channel.h>
 #include <boost/log/trivial.hpp>
@@ -83,8 +83,15 @@ namespace messaging
 
     std::string Participant::prepare_for_game(
         const channel_ptr &channel,
-        const GameInvite &game_invite) {   
-        prepare_for_game(game_invite);
+        const GameInvite &game_invite)
+    {
+        std::string response;
+        if (prepare_for_game(game_invite, &response))
+        {
+            send_message(channel,
+                         game_invite.get_game_id(),
+                         response);
+        }
         return prepare_listen_exchange_topic(channel,
                                              get_game_exchange_name(),
                                              game_invite.get_game_id());
@@ -129,8 +136,18 @@ namespace messaging
         const GameInvite &invite,
         const std::string &message) const
     {
+        send_message(channel,
+                     invite.get_game_id(),
+                     message);
+    }
+
+    void Participant::send_message(
+        const channel_ptr &channel,
+        const std::string &game_id,
+        const std::string &message) const
+    {
         channel->BasicPublish(get_game_exchange_name(),
-                              invite.get_game_id(),
+                              game_id,
                               AmqpClient::BasicMessage::Create(message));
     }
 
