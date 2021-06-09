@@ -1,41 +1,45 @@
 #ifndef __GAME_STATE_H__
 #define __GAME_STATE_H__
-
-#include <PongAI/messaging/messages/game_invite.hpp>
+#include <PongAI/pong/objects/field.hpp>
+#include <PongAI/pong/messages/action.hpp>
 #include <string>
-#include <unordered_map>
 
-namespace boost
-{
-    template <typename T>
-    class shared_ptr;
-} // namespace boost
-
-namespace pong::objects
-{
-    class Object;
-    class Field;
-    typedef boost::shared_ptr<Field> Field_ptr;
-}
-
-namespace pong::messages
+namespace pong
 {
 
-    class GameState
+    namespace messages
     {
 
-    private:
-        pong::objects::Field_ptr field;
 
-    public:
-        GameState();
-        GameState(const pong::objects::Field_ptr& field);
+        class GameState
+        {
 
-        static GameState from_json(const std::string &json_string);
-        static std::string to_json(const GameState game_state);
+        typedef std::vector<std::pair<std::string, pong::Action>> Actions;
 
-        void set_field(const pong::objects::Field_ptr& field);
-    };
-} // namespace messages
+        private:
+            std::string game_id;
+            pong::objects::Field field;
+            std::vector<std::string> players;
+            Actions actions;
+
+        public:
+            GameState();
+            GameState(const std::string &id, const pong::objects::Field &field);
+            GameState(const pong::objects::Field &field);
+
+            static GameState from_json(const std::string &json_string);
+            static std::string to_json(const GameState game_state);
+
+            void set_field(const pong::objects::Field &field);
+            pong::objects::Field get_field() const;
+
+            void set_game_id(const std::string &id);
+            std::string get_game_id() const;
+
+            Actions get_actions() const { return actions;};
+        };
+
+    } // namespace messages
+}
 
 #endif // __GAME_STATE_H__

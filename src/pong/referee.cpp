@@ -14,10 +14,10 @@ namespace pong
 
     bool Referee::prepare_for_game(
         const messaging::messages::GameInvite &game_invite,
-        std::string* message)
+        std::string *message)
     {
-        auto field = boost::make_shared<pong::objects::Field>();
-        field->set_owner(get_name());
+        pong::objects::Field field;
+        field.set_owner(get_name());
 
         for (auto participent : game_invite.participents)
         {
@@ -25,7 +25,7 @@ namespace pong
             {
                 objects::Paddle paddle;
                 paddle.set_owner(participent.second);
-                field->add_paddle(paddle);
+                field.add_paddle(paddle);
             }
         }
 
@@ -34,11 +34,51 @@ namespace pong
         {
             objects::Ball ball;
             ball.set_owner(get_name());
-            field->add_ball(ball);
+            field.add_ball(ball);
         }
 
-        active_games.insert(std::make_pair(game_invite.get_game_id(), field));
-        (*message) = messages::GameState::to_json(messages::GameState(field));
+        auto game_state = messages::GameState(field);
+        game_state.set_game_id(game_invite.get_game_id());
+        active_games.insert(std::make_pair(game_invite.get_game_id(), game_state));
+        (*message) = messages::GameState::to_json(game_state);
         return true;
     };
+
+    std::string Referee::respond_on_game_message(
+        const std::string &game_message)
+    {
+        messages::GameState state = messages::GameState::from_json(game_message);
+        auto corrisponding_active_game = active_games.find(state.get_field().get_id());
+        if (corrisponding_active_game != active_games.end())
+        {
+            merge_actions(state);
+            if (all_actions_are_available(state.))
+            {
+                update_known_state(*corrisponding_active_game)
+            }
+        }
+    };
+
+    void Referee::merge_actions(const messages::GameState &suggestion)
+    {
+        auto state_iterator = active_games.find(suggestion.get_game_id());
+        if (active_games.find(suggestion.get_game_id()) == active_games.end())
+        {
+            return;
+        }
+
+        auto game_state = state_iterator->second;
+        for (auto seggested_action : suggestion.get_actions())
+        {
+            for (auto known_action : game_state.get_actions())
+            {
+                if (seggested_action.first == known_action.first) {
+
+                }
+            }
+        }
+
+        state_iterator->second = game_state;
+    }
+
 } // namespace pong

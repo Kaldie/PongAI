@@ -18,12 +18,16 @@ namespace pong
 
         GameState::GameState()
         {
-            field = boost::make_shared<objects::Field>();
         }
 
-        GameState::GameState(const pong::objects::Field_ptr &field)
+        GameState::GameState(const pong::objects::Field &field)
+            : field(field)
         {
-            this->field = field;
+        }
+
+        GameState::GameState(const std::string &id, const pong::objects::Field &field)
+            : field(field), game_id(id)
+        {
         }
 
         GameState GameState::from_json(const std::string &input)
@@ -33,9 +37,8 @@ namespace pong
             boost::property_tree::ptree out;
             ss << input;
             boost::property_tree::read_json(ss, out);
-
-            game_state.field = boost::make_shared<objects::Field>(
-                objects::Field(out.get_child("gamestate.field")));
+            game_state.game_id = out.get<std::string>("id");
+            game_state.field = objects::Field(out.get_child("gamestate.field"));
 
             return game_state;
         }
@@ -43,15 +46,31 @@ namespace pong
         std::string GameState::to_json(const GameState game_state)
         {
             boost::property_tree::ptree out;
-            out.add_child("gamestate.field", game_state.field->to_ptree());
+            out.put("id", game_state.game_id);
+            out.add_child("gamestate.field", game_state.field.to_ptree());
             std::ostringstream oss;
             boost::property_tree::write_json(oss, out);
             return oss.str();
         }
 
-        void GameState::set_field(const pong::objects::Field_ptr &field)
+        void GameState::set_field(const pong::objects::Field &field)
         {
             this->field = field;
+        }
+
+        objects::Field GameState::get_field() const
+        {
+            return field;
+        }
+
+        void GameState::set_game_id(const std::string &id)
+        {
+            game_id = id;
+        }
+
+        std::string GameState::get_game_id() const
+        {
+            return game_id;
         }
 
     } // namespace messages
