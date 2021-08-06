@@ -5,7 +5,7 @@ CMakeCache*
 **/CMakeFiles/**/*
 .env
 **/*log
-**/_deps/**/*
+**/_deps/*
 GPATH
 GRTAGS
 GTAGS
