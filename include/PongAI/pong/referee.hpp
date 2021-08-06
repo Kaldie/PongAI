@@ -28,6 +28,7 @@ namespace pong
 
     class Referee : public ::messaging::Participant
     {
+        typedef std::map<std::string, messages::GameState>::iterator ActiveGameIterator;
     private:
         std::map<std::string, messages::GameState> active_games;
 
@@ -40,10 +41,14 @@ namespace pong
         virtual std::string respond_on_game_message(
             const std::string &game_message);
 
-        void merge_actions(const messages::GameState& suggestion);
-        bool should_update_state(const std::string& game_id);
-        void update_game_state(std::string& game_id);
-    };   
+        void _merge_actions(const messages::GameState& suggestion, ActiveGameIterator& active_game);
+        bool _should_update_state(const std::string& game_id);
+        bool _all_actions_are_available(ActiveGameIterator& active_game);
+        void _update_game_state(messages::GameState& game_state);
+    };
+
+
+       
 };
 
 #endif // __REFEREE_H__

@@ -40,6 +40,15 @@ namespace pong
             game_state.game_id = out.get<std::string>("id");
             game_state.field = objects::Field(out.get_child("gamestate.field"));
 
+            auto optional_actions_ptree = out.get_child_optional("actions");
+            if (optional_actions_ptree.has_value())
+            {
+                for (auto ptree : optional_actions_ptree.value())
+                {
+                    game_state.add_action(Action(ptree.second));
+                }
+            }
+
             return game_state;
         }
 
@@ -48,6 +57,14 @@ namespace pong
             boost::property_tree::ptree out;
             out.put("id", game_state.game_id);
             out.add_child("gamestate.field", game_state.field.to_ptree());
+
+            boost::property_tree::ptree actions_ptree;
+            for (auto action : game_state.actions)
+            {
+                actions_ptree.add_child(action.first, Action::to_ptree(action.second));
+            }
+            out.add_child("actions", actions_ptree);
+
             std::ostringstream oss;
             boost::property_tree::write_json(oss, out);
             return oss.str();
@@ -71,6 +88,16 @@ namespace pong
         std::string GameState::get_game_id() const
         {
             return game_id;
+        }
+
+        bool GameState::add_action(const Action &action, const bool overwrite)
+        {
+            auto return_value = actions.insert({action.user_id, action});
+            if (not return_value.second && overwrite) {
+                actions[action.user_id] = action;
+                return_value.second = true;
+            }
+            return return_value.second;
         }
 
     } // namespace messages

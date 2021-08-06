@@ -3,6 +3,9 @@
 
 #include <PongAI/default_include.hpp>
 #include <PongAI/pong/objects/object.hpp>
+#include <PongAI/pong/objects/goal.hpp>
+#include <PongAI/pong/objects/ball.hpp>
+#include <PongAI/pong/objects/paddle.hpp>
 #include <vector>
 
 namespace pong::objects

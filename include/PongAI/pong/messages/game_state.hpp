@@ -1,7 +1,7 @@
 #ifndef __GAME_STATE_H__
 #define __GAME_STATE_H__
-#include <PongAI/pong/objects/field.hpp>
 #include <PongAI/pong/messages/action.hpp>
+#include <PongAI/pong/objects/field.hpp>
 #include <string>
 
 namespace pong
@@ -10,11 +10,8 @@ namespace pong
     namespace messages
     {
 
-
         class GameState
         {
-
-        typedef std::vector<std::pair<std::string, pong::Action>> Actions;
 
         private:
             std::string game_id;
@@ -36,7 +33,11 @@ namespace pong
             void set_game_id(const std::string &id);
             std::string get_game_id() const;
 
-            Actions get_actions() const { return actions;};
+
+            Actions get_actions() const { return actions; };
+            bool add_action(const Action &action, const bool override = false);
+
+            std::vector<std::string> get_players() const { return players; };
         };
 
     } // namespace messages

@@ -19,6 +19,7 @@ namespace pong
         pong::objects::Field field;
         field.set_owner(get_name());
 
+        // Add players
         for (auto participent : game_invite.participents)
         {
             if (participent.first == EntityType::PlayerType)
@@ -48,37 +49,41 @@ namespace pong
         const std::string &game_message)
     {
         messages::GameState state = messages::GameState::from_json(game_message);
-        auto corrisponding_active_game = active_games.find(state.get_field().get_id());
-        if (corrisponding_active_game != active_games.end())
+        ActiveGameIterator active_game = active_games.find(state.get_field().get_id());
+        if (active_game != active_games.end())
         {
-            merge_actions(state);
-            if (all_actions_are_available(state.))
+            _merge_actions(state, active_game);
+            if (_all_actions_are_available(active_game))
             {
-                update_known_state(*corrisponding_active_game)
+                _update_game_state(active_game->second);
             }
         }
+        return "here";
     };
 
-    void Referee::merge_actions(const messages::GameState &suggestion)
+    void Referee::_merge_actions(const messages::GameState &suggestion, ActiveGameIterator &active_game)
     {
-        auto state_iterator = active_games.find(suggestion.get_game_id());
-        if (active_games.find(suggestion.get_game_id()) == active_games.end())
+        auto has_found_new_action = false;
+
+        for (auto action : suggestion.get_actions())
         {
-            return;
+            has_found_new_action |= active_game->second.add_action(action.second);
         }
+    }
 
-        auto game_state = state_iterator->second;
-        for (auto seggested_action : suggestion.get_actions())
+    bool Referee::_all_actions_are_available(ActiveGameIterator &active_game)
+    {
+        bool all_actions_available = true;
+        Actions actions = active_game->second.get_actions();
+        for (auto player : active_game->second.get_players())
         {
-            for (auto known_action : game_state.get_actions())
+            if (actions.find(player) == actions.end())
             {
-                if (seggested_action.first == known_action.first) {
-
-                }
+                all_actions_available = false;
             }
         }
 
-        state_iterator->second = game_state;
+        return all_actions_available;
     }
 
 } // namespace pong

@@ -23,13 +23,13 @@ namespace pong::objects
               {
                   // goal 1
                   {width / 2, 0}, // location
-                  width * 0.3,    // width
+                  width,          // width
                   2,              // height
               },
               {
                   // goal 2
                   {width / 2, height}, // location
-                  width * 0.3,         // width
+                  width,               // width
                   2,                   // height
               },
           }
